@@ -1,0 +1,466 @@
+{
+  "summary": {
+    "total_rows": 6,
+    "passed_rows": 1,
+    "failed_rows": 5,
+    "pass_rate": 16.666666666666664,
+    "execution_time_seconds": 19.47,
+    "timestamp": "2025-11-16T18:27:50.507159"
+  },
+  "failures": [
+    {
+      "row_number": 1,
+      "csv_row_data": {
+        "PolicyNumber": "POL_001",
+        "PartyID": "PTY_001",
+        "ProductCode": "BKSP32",
+        "TotalPremium": "1250.50",
+        "NumberOfPremiums": "12",
+        "PolicyStartDate": "2025-01-15",
+        "Status": "ACTIVE",
+        "SSN": "111-00-1111"
+      },
+      "validation_name": "Verify Premium Installments and Value",
+      "errors": [
+        "Column 'high_value_check': Mismatch - expected 'FLAGGED_HIGH_VALUE' (type: str), got 'OK' (type: str)"
+      ]
+    },
+    {
+      "row_number": 3,
+      "csv_row_data": {
+        "PolicyNumber": "POL_003",
+        "PartyID": "PTY_003",
+        "ProductCode": "LIFE45",
+        "TotalPremium": "850.00",
+        "NumberOfPremiums": "4",
+        "PolicyStartDate": "2025-03-10",
+        "Status": "ON_HOLD",
+        "SSN": "333-00-3333"
+      },
+      "validation_name": "Verify Policy Creation and Party Link",
+      "errors": [
+        "Column 'status': Mismatch - expected 'ACTIVE' (type: str), got 'ON_HOLD' (type: str)"
+      ]
+    },
+    {
+      "row_number": 4,
+      "csv_row_data": {
+        "PolicyNumber": "POL_004",
+        "PartyID": "PTY_004",
+        "ProductCode": "HOME12",
+        "TotalPremium": "1800.25",
+        "NumberOfPremiums": "12",
+        "PolicyStartDate": "2025-04-20",
+        "Status": "ACTIVE",
+        "SSN": "444-00-4444"
+      },
+      "validation_name": "Verify Premium Installments and Value",
+      "errors": [
+        "Column 'high_value_check': Mismatch - expected 'FLAGGED_HIGH_VALUE' (type: str), got 'OK' (type: str)"
+      ]
+    },
+    {
+      "row_number": 4,
+      "csv_row_data": {
+        "PolicyNumber": "POL_004",
+        "PartyID": "PTY_004",
+        "ProductCode": "HOME12",
+        "TotalPremium": "1800.25",
+        "NumberOfPremiums": "12",
+        "PolicyStartDate": "2025-04-20",
+        "Status": "ACTIVE",
+        "SSN": "444-00-4444"
+      },
+      "validation_name": "EXAMPLE: Verify Policy End Date is After Start Date",
+      "errors": [
+        "Column 'date_order_check': Mismatch - expected 'VALID' (type: str), got 'INVALID_DATES' (type: str)"
+      ]
+    },
+    {
+      "row_number": 5,
+      "csv_row_data": {
+        "PolicyNumber": "POL_005",
+        "PartyID": "PTY_005",
+        "ProductCode": "LIFE45",
+        "TotalPremium": "950.00",
+        "NumberOfPremiums": "4",
+        "PolicyStartDate": "2025-05-15",
+        "Status": "ACTIVE",
+        "SSN": "333-00-3333"
+      },
+      "validation_name": "Verify Premium Installments and Value",
+      "errors": [
+        "Column 'high_value_check': Mismatch - expected 'FLAGGED_HIGH_VALUE' (type: str), got 'OK' (type: str)"
+      ]
+    },
+    {
+      "row_number": 5,
+      "csv_row_data": {
+        "PolicyNumber": "POL_005",
+        "PartyID": "PTY_005",
+        "ProductCode": "LIFE45",
+        "TotalPremium": "950.00",
+        "NumberOfPremiums": "4",
+        "PolicyStartDate": "2025-05-15",
+        "Status": "ACTIVE",
+        "SSN": "333-00-3333"
+      },
+      "validation_name": "EXAMPLE: Ensure No Duplicate Party was Created for Social Security Number",
+      "errors": [
+        "Column 'party_count': Mismatch - expected '1' (type: int), got '2' (type: int)"
+      ]
+    },
+    {
+      "row_number": 6,
+      "csv_row_data": {
+        "PolicyNumber": "POL_006",
+        "PartyID": "PTY_006",
+        "ProductCode": "BKSP32",
+        "TotalPremium": "2100.00",
+        "NumberOfPremiums": "12",
+        "PolicyStartDate": "2025-06-01",
+        "Status": "ACTIVE",
+        "SSN": "555-00-5555"
+      },
+      "validation_name": "Verify Premium Installments and Value",
+      "errors": [
+        "Column 'premium_count': Mismatch - expected '12' (type: int), got '11' (type: int)",
+        "Column 'high_value_check': Mismatch - expected 'FLAGGED_HIGH_VALUE' (type: str), got 'OK' (type: str)"
+      ]
+    },
+    {
+      "row_number": 6,
+      "csv_row_data": {
+        "PolicyNumber": "POL_006",
+        "PartyID": "PTY_006",
+        "ProductCode": "BKSP32",
+        "TotalPremium": "2100.00",
+        "NumberOfPremiums": "12",
+        "PolicyStartDate": "2025-06-01",
+        "Status": "ACTIVE",
+        "SSN": "555-00-5555"
+      },
+      "validation_name": "EXAMPLE: Verify Stored Premium Count Matches Actual Installments",
+      "errors": [
+        "Column 'premium_count_consistency': Mismatch - expected 'MATCH' (type: str), got 'MISMATCH' (type: str)"
+      ]
+    }
+  ],
+  "all_results": [
+    {
+      "row_number": 1,
+      "csv_data": {
+        "PolicyNumber": "POL_001",
+        "PartyID": "PTY_001",
+        "ProductCode": "BKSP32",
+        "TotalPremium": "1250.50",
+        "NumberOfPremiums": "12",
+        "PolicyStartDate": "2025-01-15",
+        "Status": "ACTIVE",
+        "SSN": "111-00-1111"
+      },
+      "passed": false,
+      "validations": [
+        {
+          "name": "Verify Policy Creation and Party Link",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  p.policy_number, p.party_id, p.status, p.product_code, pt.first_name\nFROM policies p \nJOIN parties pt ON p.party_id = pt.party_id\nWHERE p.policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify Premium Installments and Value",
+          "passed": false,
+          "errors": [
+            "Column 'high_value_check': Mismatch - expected 'FLAGGED_HIGH_VALUE' (type: str), got 'OK' (type: str)"
+          ],
+          "sql_executed": "SELECT \n  COUNT(*) as premium_count, \n  SUM(premium_amount) as total_premium_sum,\n  CASE \n    WHEN SUM(premium_amount) >= :high_value_threshold \n      THEN 'FLAGGED_HIGH_VALUE'\n    ELSE 'OK'\n  END as high_value_check\nFROM policy_premiums\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify 'Policy Issued' Operation Log",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  operation_type,\n  DATE(operation_date) AS operation_date\nFROM operations\nWHERE \n  policy_number = :policy_number\n  AND operation_type = 'POLICY_ISSUED'\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Policy End Date is After Start Date",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT\n  CASE \n    WHEN end_date > start_date THEN 'VALID'\n    ELSE 'INVALID_DATES'\n  END as date_order_check\nFROM policies\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "EXAMPLE: Ensure No Duplicate Party was Created for Social Security Number",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT COUNT(*) as party_count \nFROM parties \nWHERE ssn = :ssn\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Policy Status is Within Allowed Values",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  CASE\n    WHEN status IN ('ACTIVE', 'PENDING_PAYMENT', 'EXPIRED', 'CANCELLED', 'ON_HOLD') \n      THEN 'VALID_STATUS'\n    ELSE 'INVALID_STATUS'\n  END as status_check\nFROM policies\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Stored Premium Count Matches Actual Installments",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  p.num_premiums as expected_premiums,\n  COUNT(pp.policy_number) as actual_premiums,\n  CASE\n    WHEN p.num_premiums = COUNT(pp.policy_number) THEN 'MATCH'\n    ELSE 'MISMATCH'\n  END as premium_count_consistency\nFROM \n  policies p \nLEFT JOIN \n  policy_premiums pp ON p.policy_number = pp.policy_number\nWHERE \n  p.policy_number = :policy_number\nGROUP BY\n  p.policy_number, p.num_premiums\n"
+        }
+      ]
+    },
+    {
+      "row_number": 2,
+      "csv_data": {
+        "PolicyNumber": "POL_002",
+        "PartyID": "PTY_002",
+        "ProductCode": "BKSP32",
+        "TotalPremium": "3000.00",
+        "NumberOfPremiums": "12",
+        "PolicyStartDate": "2025-02-01",
+        "Status": "ACTIVE",
+        "SSN": "222-00-2222"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "Verify Policy Creation and Party Link",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  p.policy_number, p.party_id, p.status, p.product_code, pt.first_name\nFROM policies p \nJOIN parties pt ON p.party_id = pt.party_id\nWHERE p.policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify Premium Installments and Value",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  COUNT(*) as premium_count, \n  SUM(premium_amount) as total_premium_sum,\n  CASE \n    WHEN SUM(premium_amount) >= :high_value_threshold \n      THEN 'FLAGGED_HIGH_VALUE'\n    ELSE 'OK'\n  END as high_value_check\nFROM policy_premiums\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify 'Policy Issued' Operation Log",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  operation_type,\n  DATE(operation_date) AS operation_date\nFROM operations\nWHERE \n  policy_number = :policy_number\n  AND operation_type = 'POLICY_ISSUED'\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Policy End Date is After Start Date",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT\n  CASE \n    WHEN end_date > start_date THEN 'VALID'\n    ELSE 'INVALID_DATES'\n  END as date_order_check\nFROM policies\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "EXAMPLE: Ensure No Duplicate Party was Created for Social Security Number",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT COUNT(*) as party_count \nFROM parties \nWHERE ssn = :ssn\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Policy Status is Within Allowed Values",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  CASE\n    WHEN status IN ('ACTIVE', 'PENDING_PAYMENT', 'EXPIRED', 'CANCELLED', 'ON_HOLD') \n      THEN 'VALID_STATUS'\n    ELSE 'INVALID_STATUS'\n  END as status_check\nFROM policies\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Stored Premium Count Matches Actual Installments",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  p.num_premiums as expected_premiums,\n  COUNT(pp.policy_number) as actual_premiums,\n  CASE\n    WHEN p.num_premiums = COUNT(pp.policy_number) THEN 'MATCH'\n    ELSE 'MISMATCH'\n  END as premium_count_consistency\nFROM \n  policies p \nLEFT JOIN \n  policy_premiums pp ON p.policy_number = pp.policy_number\nWHERE \n  p.policy_number = :policy_number\nGROUP BY\n  p.policy_number, p.num_premiums\n"
+        }
+      ]
+    },
+    {
+      "row_number": 3,
+      "csv_data": {
+        "PolicyNumber": "POL_003",
+        "PartyID": "PTY_003",
+        "ProductCode": "LIFE45",
+        "TotalPremium": "850.00",
+        "NumberOfPremiums": "4",
+        "PolicyStartDate": "2025-03-10",
+        "Status": "ON_HOLD",
+        "SSN": "333-00-3333"
+      },
+      "passed": false,
+      "validations": [
+        {
+          "name": "Verify Policy Creation and Party Link",
+          "passed": false,
+          "errors": [
+            "Column 'status': Mismatch - expected 'ACTIVE' (type: str), got 'ON_HOLD' (type: str)"
+          ],
+          "sql_executed": "SELECT \n  p.policy_number, p.party_id, p.status, p.product_code, pt.first_name\nFROM policies p \nJOIN parties pt ON p.party_id = pt.party_id\nWHERE p.policy_number = :policy_number\n"
+        }
+      ]
+    },
+    {
+      "row_number": 4,
+      "csv_data": {
+        "PolicyNumber": "POL_004",
+        "PartyID": "PTY_004",
+        "ProductCode": "HOME12",
+        "TotalPremium": "1800.25",
+        "NumberOfPremiums": "12",
+        "PolicyStartDate": "2025-04-20",
+        "Status": "ACTIVE",
+        "SSN": "444-00-4444"
+      },
+      "passed": false,
+      "validations": [
+        {
+          "name": "Verify Policy Creation and Party Link",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  p.policy_number, p.party_id, p.status, p.product_code, pt.first_name\nFROM policies p \nJOIN parties pt ON p.party_id = pt.party_id\nWHERE p.policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify Premium Installments and Value",
+          "passed": false,
+          "errors": [
+            "Column 'high_value_check': Mismatch - expected 'FLAGGED_HIGH_VALUE' (type: str), got 'OK' (type: str)"
+          ],
+          "sql_executed": "SELECT \n  COUNT(*) as premium_count, \n  SUM(premium_amount) as total_premium_sum,\n  CASE \n    WHEN SUM(premium_amount) >= :high_value_threshold \n      THEN 'FLAGGED_HIGH_VALUE'\n    ELSE 'OK'\n  END as high_value_check\nFROM policy_premiums\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify 'Policy Issued' Operation Log",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  operation_type,\n  DATE(operation_date) AS operation_date\nFROM operations\nWHERE \n  policy_number = :policy_number\n  AND operation_type = 'POLICY_ISSUED'\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Policy End Date is After Start Date",
+          "passed": false,
+          "errors": [
+            "Column 'date_order_check': Mismatch - expected 'VALID' (type: str), got 'INVALID_DATES' (type: str)"
+          ],
+          "sql_executed": "SELECT\n  CASE \n    WHEN end_date > start_date THEN 'VALID'\n    ELSE 'INVALID_DATES'\n  END as date_order_check\nFROM policies\nWHERE policy_number = :policy_number\n"
+        }
+      ]
+    },
+    {
+      "row_number": 5,
+      "csv_data": {
+        "PolicyNumber": "POL_005",
+        "PartyID": "PTY_005",
+        "ProductCode": "LIFE45",
+        "TotalPremium": "950.00",
+        "NumberOfPremiums": "4",
+        "PolicyStartDate": "2025-05-15",
+        "Status": "ACTIVE",
+        "SSN": "333-00-3333"
+      },
+      "passed": false,
+      "validations": [
+        {
+          "name": "Verify Policy Creation and Party Link",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  p.policy_number, p.party_id, p.status, p.product_code, pt.first_name\nFROM policies p \nJOIN parties pt ON p.party_id = pt.party_id\nWHERE p.policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify Premium Installments and Value",
+          "passed": false,
+          "errors": [
+            "Column 'high_value_check': Mismatch - expected 'FLAGGED_HIGH_VALUE' (type: str), got 'OK' (type: str)"
+          ],
+          "sql_executed": "SELECT \n  COUNT(*) as premium_count, \n  SUM(premium_amount) as total_premium_sum,\n  CASE \n    WHEN SUM(premium_amount) >= :high_value_threshold \n      THEN 'FLAGGED_HIGH_VALUE'\n    ELSE 'OK'\n  END as high_value_check\nFROM policy_premiums\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify 'Policy Issued' Operation Log",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  operation_type,\n  DATE(operation_date) AS operation_date\nFROM operations\nWHERE \n  policy_number = :policy_number\n  AND operation_type = 'POLICY_ISSUED'\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Policy End Date is After Start Date",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT\n  CASE \n    WHEN end_date > start_date THEN 'VALID'\n    ELSE 'INVALID_DATES'\n  END as date_order_check\nFROM policies\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "EXAMPLE: Ensure No Duplicate Party was Created for Social Security Number",
+          "passed": false,
+          "errors": [
+            "Column 'party_count': Mismatch - expected '1' (type: int), got '2' (type: int)"
+          ],
+          "sql_executed": "SELECT COUNT(*) as party_count \nFROM parties \nWHERE ssn = :ssn\n"
+        }
+      ]
+    },
+    {
+      "row_number": 6,
+      "csv_data": {
+        "PolicyNumber": "POL_006",
+        "PartyID": "PTY_006",
+        "ProductCode": "BKSP32",
+        "TotalPremium": "2100.00",
+        "NumberOfPremiums": "12",
+        "PolicyStartDate": "2025-06-01",
+        "Status": "ACTIVE",
+        "SSN": "555-00-5555"
+      },
+      "passed": false,
+      "validations": [
+        {
+          "name": "Verify Policy Creation and Party Link",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  p.policy_number, p.party_id, p.status, p.product_code, pt.first_name\nFROM policies p \nJOIN parties pt ON p.party_id = pt.party_id\nWHERE p.policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify Premium Installments and Value",
+          "passed": false,
+          "errors": [
+            "Column 'premium_count': Mismatch - expected '12' (type: int), got '11' (type: int)",
+            "Column 'high_value_check': Mismatch - expected 'FLAGGED_HIGH_VALUE' (type: str), got 'OK' (type: str)"
+          ],
+          "sql_executed": "SELECT \n  COUNT(*) as premium_count, \n  SUM(premium_amount) as total_premium_sum,\n  CASE \n    WHEN SUM(premium_amount) >= :high_value_threshold \n      THEN 'FLAGGED_HIGH_VALUE'\n    ELSE 'OK'\n  END as high_value_check\nFROM policy_premiums\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "Verify 'Policy Issued' Operation Log",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  operation_type,\n  DATE(operation_date) AS operation_date\nFROM operations\nWHERE \n  policy_number = :policy_number\n  AND operation_type = 'POLICY_ISSUED'\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Policy End Date is After Start Date",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT\n  CASE \n    WHEN end_date > start_date THEN 'VALID'\n    ELSE 'INVALID_DATES'\n  END as date_order_check\nFROM policies\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "EXAMPLE: Ensure No Duplicate Party was Created for Social Security Number",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT COUNT(*) as party_count \nFROM parties \nWHERE ssn = :ssn\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Policy Status is Within Allowed Values",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT \n  CASE\n    WHEN status IN ('ACTIVE', 'PENDING_PAYMENT', 'EXPIRED', 'CANCELLED', 'ON_HOLD') \n      THEN 'VALID_STATUS'\n    ELSE 'INVALID_STATUS'\n  END as status_check\nFROM policies\nWHERE policy_number = :policy_number\n"
+        },
+        {
+          "name": "EXAMPLE: Verify Stored Premium Count Matches Actual Installments",
+          "passed": false,
+          "errors": [
+            "Column 'premium_count_consistency': Mismatch - expected 'MATCH' (type: str), got 'MISMATCH' (type: str)"
+          ],
+          "sql_executed": "SELECT \n  p.num_premiums as expected_premiums,\n  COUNT(pp.policy_number) as actual_premiums,\n  CASE\n    WHEN p.num_premiums = COUNT(pp.policy_number) THEN 'MATCH'\n    ELSE 'MISMATCH'\n  END as premium_count_consistency\nFROM \n  policies p \nLEFT JOIN \n  policy_premiums pp ON p.policy_number = pp.policy_number\nWHERE \n  p.policy_number = :policy_number\nGROUP BY\n  p.policy_number, p.num_premiums\n"
+        }
+      ]
+    }
+  ],
+  "batch_execution": {
+    "total_batches": 1,
+    "successful_batches": 1,
+    "failed_batches": 0,
+    "batches": [
+      {
+        "batch_name": "step 1",
+        "script": "/home/boggy/flow-validator/flow_tests/bksp32-nb/batch_test_1.sh",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.0,
+        "log_file": "reports/bksp32_nb_input_flow/NB_Step1.log",
+        "timestamp": "2025-11-16T18:27:30.988791"
+      }
+    ]
+  }
+}

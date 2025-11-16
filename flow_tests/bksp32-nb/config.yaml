@@ -1,0 +1,137 @@
+# This file defines the validation steps for the "BKSP32 NB Input Flow" suite.
+file:
+  path: "test.csv"
+  delimiter: "|"
+  encoding: "utf-8"
+
+
+batches:
+  - name: "step 1"
+    script: "/home/boggy/flow-validator/flow_tests/bksp32-nb/batch_test_1"
+    copy_input_file_to: "/home/boggy/flow-validator/flow_tests/bksp32-nb/fake_remote_input_folder"
+    log_file: "NB_Step1.log"
+  
+variables:
+  policy_number: "${row.PolicyNumber}"
+  party_id: "${row.PartyID}:string"
+  total_premium: "${row.TotalPremium}:float"
+  start_date: "${row.PolicyStartDate}:date"
+  product_code: "${row.ProductCode}"
+  num_premiums: "${row.NumberOfPremiums}:int"
+  ssn: "${row.SSN}:string"
+  high_value_threshold: "2500.00:float"
+
+validations:
+
+  - name: "Verify Policy Creation and Party Link"
+    sql: |
+      SELECT 
+        p.policy_number, p.party_id, p.status, p.product_code, pt.first_name
+      FROM policies p 
+      JOIN parties pt ON p.party_id = pt.party_id
+      WHERE p.policy_number = :policy_number
+    expect:
+      row_count: 1
+      columns:
+        party_id: "${party_id}"
+        product_code: "${product_code}"
+        status: "ACTIVE"
+      not_null:
+        - "first_name"
+    on_failure: "stop"
+
+  - name: "Verify Premium Installments and Value"
+    sql: |
+      SELECT 
+        COUNT(*) as premium_count, 
+        SUM(premium_amount) as total_premium_sum,
+        CASE 
+          WHEN SUM(premium_amount) >= :high_value_threshold 
+            THEN 'FLAGGED_HIGH_VALUE'
+          ELSE 'OK'
+        END as high_value_check
+      FROM policy_premiums
+      WHERE policy_number = :policy_number
+    expect:
+      row_count: 1
+      columns:
+        premium_count: "${num_premiums}:int"
+        total_premium_sum: "${total_premium}:float" 
+        high_value_check: "FLAGGED_HIGH_VALUE"      
+    on_failure: "log"
+
+  - name: "Verify 'Policy Issued' Operation Log"
+    sql: |
+      SELECT 
+        operation_type,
+        DATE(operation_date) AS operation_date
+      FROM operations
+      WHERE 
+        policy_number = :policy_number
+        AND operation_type = 'POLICY_ISSUED'
+    expect:
+      row_count: 1
+      columns:
+        operation_date: "${start_date}"
+
+  - name: "EXAMPLE: Verify Policy End Date is After Start Date"
+    sql: |
+      SELECT
+        CASE 
+          WHEN end_date > start_date THEN 'VALID'
+          ELSE 'INVALID_DATES'
+        END as date_order_check
+      FROM policies
+      WHERE policy_number = :policy_number
+    expect:
+      row_count: 1
+      columns:
+        date_order_check: "VALID"
+
+  - name: "EXAMPLE: Ensure No Duplicate Party was Created for Social Security Number"
+    sql: |
+      SELECT COUNT(*) as party_count 
+      FROM parties 
+      WHERE ssn = :ssn
+    expect:
+      row_count: 1
+      columns:
+        party_count: "${1}:int"
+
+  - name: "EXAMPLE: Verify Policy Status is Within Allowed Values"
+    sql: |
+      SELECT 
+        CASE
+          WHEN status IN ('ACTIVE', 'PENDING_PAYMENT', 'EXPIRED', 'CANCELLED', 'ON_HOLD') 
+            THEN 'VALID_STATUS'
+          ELSE 'INVALID_STATUS'
+        END as status_check
+      FROM policies
+      WHERE policy_number = :policy_number
+    expect:
+      row_count: 1
+      columns:
+        status_check: "VALID_STATUS"
+
+  - name: "EXAMPLE: Verify Stored Premium Count Matches Actual Installments"
+    sql: |
+      SELECT 
+        p.num_premiums as expected_premiums,
+        COUNT(pp.policy_number) as actual_premiums,
+        CASE
+          WHEN p.num_premiums = COUNT(pp.policy_number) THEN 'MATCH'
+          ELSE 'MISMATCH'
+        END as premium_count_consistency
+      FROM 
+        policies p 
+      LEFT JOIN 
+        policy_premiums pp ON p.policy_number = pp.policy_number
+      WHERE 
+        p.policy_number = :policy_number
+      GROUP BY
+        p.policy_number, p.num_premiums
+    expect:
+      row_count: 1
+      columns:
+        premium_count_consistency: "MATCH"
+    on_failure: "log"

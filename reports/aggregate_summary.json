@@ -1,0 +1,30 @@
+{
+  "summary": {
+    "total_suites": 1,
+    "passed_suites": 0,
+    "failed_suites": 1,
+    "suite_pass_rate": 0.0,
+    "total_rows_validated": 6,
+    "total_passed_rows": 1,
+    "total_failed_rows": 5,
+    "overall_pass_rate": 16.666666666666664,
+    "total_execution_time": 19.53
+  },
+  "execution": {
+    "start_time": "2025-11-16T18:27:30.979028",
+    "end_time": "2025-11-16T18:27:50.508013",
+    "duration_seconds": 19.53
+  },
+  "suite_results": [
+    {
+      "name": "BKSP32 NB Input Flow",
+      "passed": false,
+      "total_rows": 6,
+      "passed_rows": 1,
+      "failed_rows": 5,
+      "pass_rate": 16.666666666666664,
+      "execution_time_seconds": 19.53,
+      "report_file": "reports/bksp32_nb_input_flow/bksp32_nb_input_flow_results.json"
+    }
+  ]
+}
