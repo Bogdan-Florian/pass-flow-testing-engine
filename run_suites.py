@@ -1,10 +1,11 @@
-"""
+﻿"""
 Test Suite Runner
 Orchestrates execution of multiple validation test suites
 """
 
 import sys
 import argparse
+import shutil
 from pathlib import Path
 from datetime import datetime
 
@@ -55,7 +56,7 @@ class SuiteRunner:
             is_critical = suite_config.get('critical', False)
 
             print(f"[{i}/{len(suites_to_run)}] {suite_name}")
-            print(f"{'─'*70}")
+            print(f"{'-'*70}")
 
             try:
                 passed = self._run_suite(suite_config)
@@ -63,21 +64,21 @@ class SuiteRunner:
                 if not passed:
                     all_passed = False
                     if is_critical and stop_on_critical:
-                        print(f"\n✗ CRITICAL suite failed: {suite_name}")
+                        print(f"\nERROR CRITICAL suite failed: {suite_name}")
                         print("Stopping execution (stop_on_critical_failure=true)")
                         break
 
             except Exception as e:
-                print(f"✗ Suite error: {e}")
+                print(f"ERROR Suite error: {e}")
                 all_passed = False
                 if is_critical and stop_on_critical:
-                    print(f"\n✗ CRITICAL suite errored: {suite_name}")
+                    print(f"\nERROR CRITICAL suite errored: {suite_name}")
                     print("Stopping execution")
                     break
 
             print()
 
-        print(f"{'='*70}")
+        print(f"{'-'*70}")
         self._print_summary()
         self.aggregate_reporter.save_report()
 
@@ -94,6 +95,15 @@ class SuiteRunner:
         try:
             config = ConfigLoader.load(config_path)
             batch_results = []
+            csv_source_path = self._resolve_path(config['file']['path'], config_path.parent)
+            validation_copy_path = config.get('execution', {}).get('validation_copy_path')
+            if validation_copy_path:
+                validation_copy_path = self._resolve_path(validation_copy_path, config_path.parent)
+                validation_copy_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(csv_source_path, validation_copy_path)
+                csv_validation_path = validation_copy_path
+            else:
+                csv_validation_path = csv_source_path
 
             # NEW: Step 1 - Execute batch scripts if configured
             batch_configs = config.get('batches', [])
@@ -108,7 +118,7 @@ class SuiteRunner:
                         output_dir=suite_specific_output_dir
                     )
                 # Batches might need access to the CSV file path
-                csv_file_for_batches = self._resolve_path(config['file']['path'], config_path.parent)
+                csv_file_for_batches = csv_source_path
 
                 success, batch_results = executor.execute_batches(
                     batch_configs,
@@ -116,7 +126,7 @@ class SuiteRunner:
                 )
 
                 if not success:
-                    print("  ✗ BATCH EXECUTION FAILED. Skipping CSV validation.")
+                    print("  ERROR BATCH EXECUTION FAILED. Skipping CSV validation.")
                     end_time = datetime.now()
                     execution_time = (end_time - start_time).total_seconds()
                     
@@ -136,11 +146,11 @@ class SuiteRunner:
                     print(f"  Report: {output_file}")
                     return False  # Indicate suite failure
                 else:
-                    print(f"  ✓ All batches completed successfully.")
+                    print("  OK All batches completed successfully.")
 
 
             # Step 2 - Proceed with CSV validation
-            csv_file = self._resolve_path(config['file']['path'], config_path.parent)
+            csv_file = csv_validation_path
             processor = CSVProcessor(
                 csv_file,
                 config['file'].get('delimiter', ','),
@@ -199,7 +209,7 @@ class SuiteRunner:
                 report_file=str(output_file)
             )
 
-            status = "✓ PASSED" if reporter.failed_rows == 0 else "✗ FAILED"
+            status = "OK PASSED" if reporter.failed_rows == 0 else "ERROR FAILED"
             print(f"  {status} - {reporter.passed_rows}/{reporter.total_rows} rows valid")
             print(f"  Time: {execution_time:.2f}s")
             print(f"  Report: {output_file}")
@@ -262,7 +272,7 @@ class SuiteRunner:
         """Print aggregate summary"""
         summary = self.aggregate_reporter.get_summary()
         print("AGGREGATE SUMMARY")
-        print(f"{'─'*70}")
+        print(f"{'-'*70}")
         print(f"Total suites run: {summary['total_suites']}")
         print(f"Passed: {summary['passed_suites']}")
         print(f"Failed: {summary['failed_suites']}")
@@ -321,7 +331,7 @@ Examples:
         sys.exit(0 if all_passed else 1)
 
     except Exception as e:
-        print(f"\n✗ Fatal error: {e}")
+        print(f"\nERROR Fatal error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

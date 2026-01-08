@@ -1,0 +1,13 @@
+version: 1
+
+database:
+  connection_url: sqlite:///flow_tests/system_flow_validation_fail/system_flow.db
+
+suites:
+  - name: system_flow_validation_fail
+    enabled: true
+    critical: false
+    config: flow_tests/system_flow_validation_fail/config.yaml
+
+reporting:
+  output_dir: reports

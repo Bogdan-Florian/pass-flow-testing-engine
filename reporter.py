@@ -116,7 +116,9 @@ class Reporter:
                         }
                         
                         # Add SQL if available
-                        if 'sql' in validation:
+                        if 'sql_executed' in validation:
+                            failure['sql_executed'] = validation['sql_executed']
+                        elif 'sql' in validation:
                             failure['sql_executed'] = validation['sql']
                         
                         # Add actual row count if available

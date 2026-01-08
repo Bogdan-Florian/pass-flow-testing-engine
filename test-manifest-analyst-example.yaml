@@ -1,0 +1,13 @@
+version: 1
+
+database:
+  connection_url: postgresql://user:pass@host/db
+
+suites:
+  - name: analyst_example
+    enabled: true
+    critical: false
+    config: flow_tests/analyst_example/config.yaml
+
+reporting:
+  output_dir: reports

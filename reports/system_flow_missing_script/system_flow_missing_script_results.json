@@ -1,0 +1,42 @@
+{
+  "summary": {
+    "total_rows": 0,
+    "passed_rows": 0,
+    "failed_rows": 0,
+    "pass_rate": 0,
+    "execution_time_seconds": 0.0,
+    "timestamp": "2025-12-31T22:07:59.662505"
+  },
+  "failures": [],
+  "all_results": [],
+  "batch_execution": {
+    "total_batches": 2,
+    "successful_batches": 1,
+    "failed_batches": 1,
+    "batches": [
+      {
+        "batch_name": "Step 1",
+        "script": "flow_tests\\system_flow_missing_script\\batches\\step1.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.03,
+        "log_file": "reports\\system_flow_missing_script\\step1.log",
+        "timestamp": "2025-12-31T22:07:59.662505",
+        "start_time": "2025-12-31T22:07:59.631801",
+        "end_time": "2025-12-31T22:07:59.662505"
+      },
+      {
+        "batch_name": "Step 2",
+        "script": "flow_tests\\system_flow_missing_script\\batches\\step2_missing.bat",
+        "status": "FAILED",
+        "exit_code": -1,
+        "error": "Script not found: flow_tests\\system_flow_missing_script\\batches\\step2_missing.bat",
+        "duration_seconds": 0,
+        "log_file": null,
+        "timestamp": "2025-12-31T22:07:59.662505",
+        "start_time": null,
+        "end_time": null
+      }
+    ]
+  }
+}

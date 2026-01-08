@@ -429,10 +429,17 @@ class Validator:
             result: Result dictionary to update with pass/fail status
             variables: Available variables for template substitution
         """
+        actual_count = len(result_rows)
+        if actual_count != 1:
+            result['passed'] = False
+            result['errors'].append(
+                f"Single-row query required: expected 1 row, got {actual_count}"
+            )
+            return
+
         # Check row count expectation
         if 'row_count' in expect:
             expected_count = expect['row_count']
-            actual_count = len(result_rows)
             if actual_count != expected_count:
                 result['passed'] = False
                 result['errors'].append(
@@ -440,10 +447,6 @@ class Validator:
                 )
                 return
 
-        # If no rows returned, stop here
-        if not result_rows:
-            return
-        
         first_row = result_rows[0]
 
         # Check not-null constraints

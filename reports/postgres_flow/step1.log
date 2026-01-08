@@ -1,0 +1,17 @@
+Step 1 starting
+ERROR: Input redirection is not supported, exiting the process immediately.
+Step 1 progress 10%
+ERROR: Input redirection is not supported, exiting the process immediately.
+Step 1 progress 20%
+ERROR: Input redirection is not supported, exiting the process immediately.
+Step 1 progress 30%
+Step 1 complete
+=== Batch Execution Log ===
+Script: flow_tests\postgres_flow\batches\step1.bat
+Start Time: 2025-12-31T22:08:54.204934
+==================================================
+
+
+==================================================
+End Time: 2025-12-31T22:08:54.236908
+Exit Code: 0

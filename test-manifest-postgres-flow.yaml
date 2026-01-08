@@ -1,0 +1,13 @@
+version: 1
+
+database:
+  connection_url: postgresql://xxxxxx:xxxxxxxxxx@ep-shy-credit-agy939ct-pooler.c-2.eu-central-1.aws.neon.tech/db_int?sslmode=require&channel_binding=require
+
+suites:
+  - name: postgres_flow
+    enabled: true
+    critical: false
+    config: flow_tests/postgres_flow/config.yaml
+
+reporting:
+  output_dir: reports

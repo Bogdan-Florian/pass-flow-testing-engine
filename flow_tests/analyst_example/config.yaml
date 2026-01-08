@@ -1,0 +1,47 @@
+file:
+  # Relative path to the CSV used for validations.
+  path: test.csv
+  # Delimiter used in the CSV file.
+  delimiter: '|'
+  # CSV file encoding.
+  encoding: utf-8
+
+batches:
+  - name: Load Policies
+    # Path to the batch script (no extension). The runner picks .bat on Windows, .sh elsewhere.
+    script: C:/path/to/your/batch/load_policies
+    # Destination folder where the batch expects the input CSV.
+    copy_input_file_to: C:/path/to/your/batch/input
+    # Log file name written under reports/<suite_name>/.
+    log_file: load_policies.log
+
+variables:
+  # These variables are taken from each CSV row.
+  # Example: ${row.PolicyNumber} pulls the "PolicyNumber" column from test.csv.
+  # You can use these names in SQL (as :policy_number) and in expectations (as ${policy_number}).
+  policy_number: ${row.PolicyNumber}
+  # :decimal forces numeric precision (avoids float rounding issues).
+  amount: ${row.Amount}:decimal
+  status: ${row.Status}
+
+validations:
+  - name: policy_inserted
+    # SQL should return exactly one row (single-row enforcement).
+    sql: |
+      SELECT policy_number, amount, status
+      FROM policies
+      WHERE policy_number = :policy_number
+    expect:
+      # Require exactly one row for the policy.
+      row_count: 1
+      columns:
+        # Compare DB "status" column to the CSV "Status" value (via ${status}).
+        status: ${status}
+        # Compare DB "amount" column to the CSV "Amount" value (via ${amount}).
+        amount: ${amount}
+
+execution:
+  # Keeps a local copy for validation even if the batch deletes/moves the input file.
+  validation_copy_path: validation_copy/test.csv
+  # Stop after the first row failure if true.
+  stop_on_first_error: false

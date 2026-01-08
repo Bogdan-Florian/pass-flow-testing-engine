@@ -1,4 +1,4 @@
-# This file defines the validation steps for the "BKSP32 NB Input Flow" suite.
+﻿# This file defines the validation steps for the "BKSP32 NB Input Flow" suite.
 file:
   path: "test.csv"
   delimiter: "|"
@@ -135,3 +135,7 @@ validations:
       columns:
         premium_count_consistency: "MATCH"
     on_failure: "log"
+
+execution:
+  validation_copy_path: validation_copy/test.csv
+

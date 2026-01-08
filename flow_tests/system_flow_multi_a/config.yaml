@@ -1,0 +1,40 @@
+﻿file:
+  path: test.csv
+  delimiter: '|'
+  encoding: utf-8
+
+batches:
+  - name: Step 1
+    script: flow_tests/system_flow_multi_a/batches/step1
+    copy_input_file_to: flow_tests/system_flow_multi_a/system/input
+    log_file: step1.log
+  - name: Step 2
+    script: flow_tests/system_flow_multi_a/batches/step2
+    copy_input_file_to: flow_tests/system_flow_multi_a/system/input
+    log_file: step2.log
+  - name: Step 3
+    script: flow_tests/system_flow_multi_a/batches/step3
+    copy_input_file_to: flow_tests/system_flow_multi_a/system/input
+    log_file: step3.log
+
+variables:
+  policy_number: ${row.PolicyNumber}
+  amount: ${row.Amount}:decimal
+  status: ${row.Status}
+
+validations:
+  - name: record_exists
+    sql: |
+      SELECT policy_number, amount, status
+      FROM records
+      WHERE policy_number = :policy_number
+    expect:
+      row_count: 1
+      columns:
+        status: ${status}
+        amount: ${amount}
+
+execution:
+  validation_copy_path: validation_copy/test.csv
+  stop_on_first_error: false
+

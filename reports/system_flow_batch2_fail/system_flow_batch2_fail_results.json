@@ -1,0 +1,42 @@
+{
+  "summary": {
+    "total_rows": 0,
+    "passed_rows": 0,
+    "failed_rows": 0,
+    "pass_rate": 0,
+    "execution_time_seconds": 0.0,
+    "timestamp": "2025-12-31T22:07:59.374047"
+  },
+  "failures": [],
+  "all_results": [],
+  "batch_execution": {
+    "total_batches": 2,
+    "successful_batches": 1,
+    "failed_batches": 1,
+    "batches": [
+      {
+        "batch_name": "Step 1",
+        "script": "flow_tests\\system_flow_batch2_fail\\batches\\step1.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.03,
+        "log_file": "reports\\system_flow_batch2_fail\\step1.log",
+        "timestamp": "2025-12-31T22:07:59.354623",
+        "start_time": "2025-12-31T22:07:59.323053",
+        "end_time": "2025-12-31T22:07:59.354623"
+      },
+      {
+        "batch_name": "Step 2",
+        "script": "flow_tests\\system_flow_batch2_fail\\batches\\step2.bat",
+        "status": "FAILED",
+        "exit_code": 2,
+        "error": "Script exited with code 2. See log: reports\\system_flow_batch2_fail\\step2.log",
+        "duration_seconds": 0.02,
+        "log_file": "reports\\system_flow_batch2_fail\\step2.log",
+        "timestamp": "2025-12-31T22:07:59.374047",
+        "start_time": "2025-12-31T22:07:59.354623",
+        "end_time": "2025-12-31T22:07:59.374047"
+      }
+    ]
+  }
+}

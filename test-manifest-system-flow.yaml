@@ -1,0 +1,13 @@
+version: 1
+
+database:
+  connection_url: sqlite:///flow_tests/system_flow/system_flow.db
+
+suites:
+  - name: system_flow
+    enabled: true
+    critical: false
+    config: flow_tests/system_flow/config.yaml
+
+reporting:
+  output_dir: reports

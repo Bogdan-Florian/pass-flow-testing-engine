@@ -1,4 +1,4 @@
-"""
+﻿"""
 Data Validation Testing Framework
 Main entry point - orchestrates the validation process
 """
@@ -10,6 +10,8 @@ from config_loader import ConfigLoader
 from csv_processor import CSVProcessor
 from validator import Validator
 from reporter import Reporter
+
+DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 
 
 def main():
@@ -37,18 +39,18 @@ def main():
     try:
         # Step 1: Load and parse YAML configuration
         config = ConfigLoader.load(config_path)
-        print(f"✓ Configuration loaded successfully")
+        print("OK Configuration loaded successfully")
         print(f"  CSV file: {config['file']['path']}")
         print(f"  Validations: {len(config['validations'])}")
         
         # Step 2: Initialize CSV processor
-        csv_file = config['file']['path']
+        csv_file = config_path.parent / config['file']['path']
         delimiter = config['file'].get('delimiter', ',')
         encoding = config['file'].get('encoding', 'utf-8')
         
         processor = CSVProcessor(csv_file, delimiter, encoding)
         total_rows = processor.count_rows()
-        print(f"✓ CSV file loaded: {total_rows} rows to validate")
+        print(f"OK CSV file loaded: {total_rows} rows to validate")
         
         # Step 3: Initialize validator with database connection
         db_url = args.db_url or config.get('database', {}).get('connection_url')
@@ -57,12 +59,14 @@ def main():
             sys.exit(1)
         
         timeout = config.get('execution', {}).get('timeout_seconds', 30)
-        validator = Validator(db_url, timeout)
-        print(f"✓ Connected to database")
+        date_format = config.get('execution', {}).get('date_format', DEFAULT_DATE_FORMAT)
+        validator = Validator(db_url=db_url, date_format=date_format, timeout_seconds=timeout)
+        print("OK Connected to database")
         
         # Step 4: Initialize reporter
         output_file = config.get('reporting', {}).get('output_file', 'validation_results.json')
-        reporter = Reporter(output_file)
+        output_path = output_file if Path(output_file).is_absolute() else (config_path.parent / output_file)
+        reporter = Reporter(output_path)
         
         # Step 5: Process each CSV row
         print(f"\nProcessing rows...")
@@ -84,10 +88,10 @@ def main():
             
             # Check if we should stop on failure
             if stop_on_error and row_results['has_failures']:
-                print(f"\n✗ Stopping on first error at row {row_num}")
+                print(f"\nERROR Stopping on first error at row {row_num}")
                 break
         
-        print(f"\n✓ Validation complete")
+        print("\nOK Validation complete")
         
         # Step 6: Generate and save report
         reporter.generate_report()
@@ -97,13 +101,13 @@ def main():
         print(f"Total rows processed: {reporter.total_rows}")
         print(f"Passed: {reporter.passed_rows} ({reporter.pass_rate:.1f}%)")
         print(f"Failed: {reporter.failed_rows}")
-        print(f"Report saved to: {output_file}")
+        print(f"Report saved to: {output_path}")
         
         # Exit with error code if any validations failed
         sys.exit(0 if reporter.failed_rows == 0 else 1)
         
     except Exception as e:
-        print(f"\n✗ Error: {e}")
+        print(f"\nERROR {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

@@ -1,0 +1,103 @@
+{
+  "summary": {
+    "total_rows": 2,
+    "passed_rows": 1,
+    "failed_rows": 1,
+    "pass_rate": 50.0,
+    "execution_time_seconds": 0.0,
+    "timestamp": "2025-12-31T22:08:00.272841"
+  },
+  "failures": [
+    {
+      "row_number": 2,
+      "csv_row_data": {
+        "PolicyNumber": "POL-002",
+        "Amount": "500.00",
+        "Status": "PENDING"
+      },
+      "validation_name": "record_exists",
+      "errors": [
+        "Single-row query required: expected 1 row, got 0"
+      ],
+      "sql_executed": "SELECT policy_number, amount, status\nFROM records\nWHERE policy_number = :policy_number\n"
+    }
+  ],
+  "all_results": [
+    {
+      "row_number": 1,
+      "csv_data": {
+        "PolicyNumber": "POL-001",
+        "Amount": "1500.75",
+        "Status": "ACTIVE"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "record_exists",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT policy_number, amount, status\nFROM records\nWHERE policy_number = :policy_number\n"
+        }
+      ]
+    },
+    {
+      "row_number": 2,
+      "csv_data": {
+        "PolicyNumber": "POL-002",
+        "Amount": "500.00",
+        "Status": "PENDING"
+      },
+      "passed": false,
+      "validations": [
+        {
+          "name": "record_exists",
+          "passed": false,
+          "errors": [
+            "Single-row query required: expected 1 row, got 0"
+          ],
+          "sql_executed": "SELECT policy_number, amount, status\nFROM records\nWHERE policy_number = :policy_number\n"
+        }
+      ]
+    }
+  ],
+  "batch_execution": {
+    "total_batches": 3,
+    "successful_batches": 3,
+    "failed_batches": 0,
+    "batches": [
+      {
+        "batch_name": "Step 1",
+        "script": "flow_tests\\system_flow_validation_fail\\batches\\step1.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.03,
+        "log_file": "reports\\system_flow_validation_fail\\step1.log",
+        "timestamp": "2025-12-31T22:08:00.206827",
+        "start_time": "2025-12-31T22:08:00.176257",
+        "end_time": "2025-12-31T22:08:00.206827"
+      },
+      {
+        "batch_name": "Step 2",
+        "script": "flow_tests\\system_flow_validation_fail\\batches\\step2.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.02,
+        "log_file": "reports\\system_flow_validation_fail\\step2.log",
+        "timestamp": "2025-12-31T22:08:00.227283",
+        "start_time": "2025-12-31T22:08:00.206827",
+        "end_time": "2025-12-31T22:08:00.227283"
+      },
+      {
+        "batch_name": "Step 3",
+        "script": "flow_tests\\system_flow_validation_fail\\batches\\step3.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.03,
+        "log_file": "reports\\system_flow_validation_fail\\step3.log",
+        "timestamp": "2025-12-31T22:08:00.257934",
+        "start_time": "2025-12-31T22:08:00.227283",
+        "end_time": "2025-12-31T22:08:00.257934"
+      }
+    ]
+  }
+}

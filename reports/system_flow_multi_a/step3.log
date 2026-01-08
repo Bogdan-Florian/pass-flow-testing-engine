@@ -1,0 +1,17 @@
+Step 3 starting
+ERROR: Input redirection is not supported, exiting the process immediately.
+Step 3 progress 10%
+ERROR: Input redirection is not supported, exiting the process immediately.
+Step 3 progress 20%
+ERROR: Input redirection is not supported, exiting the process immediately.
+Step 3 progress 30%
+Step 3 complete
+=== Batch Execution Log ===
+Script: flow_tests\system_flow_multi_a\batches\step3.bat
+Start Time: 2025-12-31T22:08:00.592533
+==================================================
+
+
+==================================================
+End Time: 2025-12-31T22:08:00.623400
+Exit Code: 0

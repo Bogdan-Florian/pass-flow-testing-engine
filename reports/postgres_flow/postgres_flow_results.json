@@ -1,0 +1,87 @@
+{
+  "summary": {
+    "total_rows": 2,
+    "passed_rows": 2,
+    "failed_rows": 0,
+    "pass_rate": 100.0,
+    "execution_time_seconds": 1.43,
+    "timestamp": "2025-12-31T22:08:55.753729"
+  },
+  "failures": [],
+  "all_results": [
+    {
+      "row_number": 1,
+      "csv_data": {
+        "PolicyNumber": "POL-101",
+        "Amount": "1200.50",
+        "Status": "ACTIVE"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "record_exists",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT policy_number, amount, status\nFROM records\nWHERE policy_number = :policy_number\n"
+        }
+      ]
+    },
+    {
+      "row_number": 2,
+      "csv_data": {
+        "PolicyNumber": "POL-102",
+        "Amount": "300.00",
+        "Status": "PENDING"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "record_exists",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT policy_number, amount, status\nFROM records\nWHERE policy_number = :policy_number\n"
+        }
+      ]
+    }
+  ],
+  "batch_execution": {
+    "total_batches": 3,
+    "successful_batches": 3,
+    "failed_batches": 0,
+    "batches": [
+      {
+        "batch_name": "Step 1",
+        "script": "flow_tests\\postgres_flow\\batches\\step1.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.03,
+        "log_file": "reports\\postgres_flow\\step1.log",
+        "timestamp": "2025-12-31T22:08:54.236908",
+        "start_time": "2025-12-31T22:08:54.204934",
+        "end_time": "2025-12-31T22:08:54.236908"
+      },
+      {
+        "batch_name": "Step 2",
+        "script": "flow_tests\\postgres_flow\\batches\\step2.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.03,
+        "log_file": "reports\\postgres_flow\\step2.log",
+        "timestamp": "2025-12-31T22:08:54.268595",
+        "start_time": "2025-12-31T22:08:54.236908",
+        "end_time": "2025-12-31T22:08:54.268595"
+      },
+      {
+        "batch_name": "Step 3",
+        "script": "flow_tests\\postgres_flow\\batches\\step3.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.03,
+        "log_file": "reports\\postgres_flow\\step3.log",
+        "timestamp": "2025-12-31T22:08:54.294483",
+        "start_time": "2025-12-31T22:08:54.268595",
+        "end_time": "2025-12-31T22:08:54.294483"
+      }
+    ]
+  }
+}
