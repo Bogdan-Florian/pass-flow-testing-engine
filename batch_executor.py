@@ -9,6 +9,7 @@ import shutil
 import platform
 import os
 import stat
+import shlex
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
@@ -140,7 +141,7 @@ class SshRunner:
         self.os_name = os_name
         self.shell = shell
 
-    def run(self, script_path, log_path, command_builder):
+    def run(self, script_path, log_path, command_builder, args=None):
         client = None
         try:
             client = paramiko.SSHClient()
@@ -151,8 +152,8 @@ class SshRunner:
             else:
                 client.connect(self.host, port=self.port, username=self.username, password=self.password)
 
-            command = command_builder(script_path, self.os_name, self.shell)
-            full_command = " ".join(command)
+            command = command_builder(script_path, self.os_name, self.shell, args)
+            full_command = " ".join(shlex.quote(str(part)) for part in command)
 
             with open(log_path, 'w') as log_file:
                 log_file.write(f"=== Remote Batch Execution Log ===\n")
@@ -262,7 +263,18 @@ class BatchExecutor:
                     self._record_failure(batch_name, str(script_path), f"File copy error: {error_msg}")
                     return False, self.batch_results
                 print(f"  OK Input file copied to: {copy_dest}")
-            
+
+            # Optional script arguments
+            args = batch_config.get('args', [])
+            if args is None:
+                args = []
+            if not isinstance(args, (list, tuple)):
+                error_msg = f"'args' must be a list for batch: {batch_name}"
+                print(f"  FAIL {error_msg}")
+                self._record_failure(batch_name, str(script_path), error_msg)
+                return False, self.batch_results
+            args = [str(a) for a in args]
+
             # Execute the script
             log_file = batch_config.get('log_file', self._default_log_file(i, batch_name))
             log_path = self.output_dir / log_file
@@ -270,7 +282,7 @@ class BatchExecutor:
             print(f"  Running script (logging to {log_path})...")
             start_time = datetime.now()
             
-            exit_code, error_msg = self._run_script(str(script_path), log_path)
+            exit_code, error_msg = self._run_script(str(script_path), log_path, args)
             
             end_time = datetime.now()
             duration = (end_time - start_time).total_seconds()
@@ -334,13 +346,13 @@ class BatchExecutor:
             return False, f"Script not readable: {script_path}"
         return True, None
     
-    def _run_script(self, script_path, log_path):
+    def _run_script(self, script_path, log_path, args=None):
         """
         Execute shell script and capture output to log file.
         This no longer modifies script permissions.
         """
         if self.remote_runner:
-            return self.remote_runner.run(script_path, log_path, self.build_command)
+            return self.remote_runner.run(script_path, log_path, self.build_command, args)
 
         try:
             script = Path(script_path)
@@ -351,7 +363,7 @@ class BatchExecutor:
                 log_file.write(f"Start Time: {datetime.now().isoformat()}\n")
                 log_file.write(f"{'='*50}\n\n")
                 
-                command = self.build_command(str(script.absolute()), self.os_name, self.shell)
+                command = self.build_command(str(script.absolute()), self.os_name, self.shell, args)
                 result = subprocess.run(
                     command,
                     stdout=log_file,
@@ -376,14 +388,15 @@ class BatchExecutor:
             return -1, error_msg
     
     @staticmethod
-    def build_command(script_path, os_name, shell=None):
+    def build_command(script_path, os_name, shell=None, args=None):
+        args = [str(a) for a in (args or [])]
         if os_name == "Windows":
-            return ["cmd.exe", "/c", script_path]
+            return ["cmd.exe", "/c", script_path, *args]
         if shell:
-            return [shell, script_path]
+            return [shell, script_path, *args]
         if shutil.which("bash"):
-            return ["bash", script_path]
-        return ["sh", script_path]
+            return ["bash", script_path, *args]
+        return ["sh", script_path, *args]
 
     def _record_success(self, batch_name, script_path, duration, log_file, start_time, end_time):
         """Record successful batch execution"""

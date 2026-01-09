@@ -8,12 +8,21 @@ batches:
     script: /opt/remote/batches/batch1              # remote base path (no .sh suffix)
     copy_input_file_to: /opt/remote/batches/batch1/input  # remote input folder for batch1
     log_file: batch1.log
+    args:                                            # optional: example parameters passed to the script
+      - "--input"
+      - "/opt/remote/batches/batch1/input/test.csv"
+      - "--mode"
+      - "full"
   - name: Batch 2
     script: /opt/remote/batches/batch2
     log_file: batch2.log
+    args:
+      - "--mode"
+      - "phase2"
   - name: Batch 3
     script: /opt/remote/batches/batch3
     log_file: batch3.log
+    args: []  # leave empty if no arguments needed
 
 variables:
   policy_number: ${row.PolicyNumber}

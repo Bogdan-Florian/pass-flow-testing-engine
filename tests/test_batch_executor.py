@@ -26,6 +26,17 @@ def test_build_command_non_windows_fallback_to_sh(monkeypatch):
     assert command == ["sh", "/tmp/run.sh"]
 
 
+def test_build_command_with_args_windows():
+    command = BatchExecutor.build_command("C:\\scripts\\run.bat", "Windows", args=["a", "b"])
+    assert command == ["cmd.exe", "/c", "C:\\scripts\\run.bat", "a", "b"]
+
+
+def test_build_command_with_args_linux(monkeypatch):
+    monkeypatch.setattr(batch_executor.shutil, "which", lambda _: "/bin/bash")
+    command = BatchExecutor.build_command("/tmp/run.sh", "Linux", args=["one", "two"])
+    assert command == ["bash", "/tmp/run.sh", "one", "two"]
+
+
 def test_resolve_script_path_windows():
     executor = BatchExecutor("suite", os_name="Windows")
     script_path = executor._resolve_script_path("scripts/run")
@@ -147,6 +158,56 @@ def test_execute_batches_input_delivery_failure(tmp_path):
     assert results
     assert results[0]["status"] == "FAILED"
     assert "File copy error" in results[0]["error"]
+
+
+def test_execute_batches_with_args_passed_to_runner(tmp_path, monkeypatch):
+    script_base = tmp_path / "run"
+    script_path = script_base.with_suffix(".sh")
+    script_path.write_text("#!/bin/sh\necho ok\n", encoding="utf-8")
+
+    captured = {}
+
+    executor = BatchExecutor(
+        "suite",
+        output_dir=tmp_path,
+        os_name="Linux"
+    )
+
+    def fake_run(script, log, args=None):
+        captured["script"] = script
+        captured["log"] = log
+        captured["args"] = args
+        return 0, None
+
+    monkeypatch.setattr(executor, "_run_script", fake_run)
+
+    batch_configs = [{
+        "name": "ArgsBatch",
+        "script": str(script_base),
+        "args": ["--flag", "value"]
+    }]
+    success, results = executor.execute_batches(batch_configs, tmp_path / "input.csv")
+    assert success
+    assert captured["args"] == ["--flag", "value"]
+    assert results[0]["status"] == "SUCCESS"
+
+
+def test_execute_batches_rejects_non_list_args(tmp_path):
+    script_base = tmp_path / "run"
+    script_path = script_base.with_suffix(".sh")
+    script_path.write_text("#!/bin/sh\necho ok\n", encoding="utf-8")
+
+    executor = BatchExecutor("suite", output_dir=tmp_path, os_name="Linux")
+    batch_configs = [{
+        "name": "BadArgs",
+        "script": str(script_base),
+        "args": "--not-a-list"
+    }]
+
+    success, results = executor.execute_batches(batch_configs, tmp_path / "input.csv")
+    assert not success
+    assert results[0]["status"] == "FAILED"
+    assert "args" in results[0]["error"]
 
 
 def test_execute_batches_success_flow(tmp_path, monkeypatch):

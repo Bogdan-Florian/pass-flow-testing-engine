@@ -108,3 +108,14 @@ If batches delete or move the input CSV, set `execution.validation_copy_path` in
 ## 10) Reports
 - Per-suite report includes summary, failures (with `sql_executed`), all results, and batch execution (if run).
 - Aggregate report summarizes all suites in a manifest.
+
+## 11) Passing arguments to batch scripts
+- Add `args` to a batch entry to append arguments after the script name (works for local `.bat`/`.sh` and SSH runs):
+```
+batches:
+  - name: Step 1
+    script: flow_tests/system_flow/batches/step1
+    copy_input_file_to: /opt/remote/input
+    args: ["--mode", "full", "/opt/remote/input/test.csv"]
+```
+- `args` must be a list; each item is stringified as-is before invocation.

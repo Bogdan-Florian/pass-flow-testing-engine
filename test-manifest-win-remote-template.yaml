@@ -25,3 +25,5 @@ suites:
 
 reporting:
   output_dir: reports
+
+# Note: per-batch arguments are defined inside the suite config (flow_tests/win_remote_template/config.yaml).
