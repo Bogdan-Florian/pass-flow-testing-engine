@@ -1,0 +1,15 @@
+=== Remote Batch Execution Log ===
+Host: 157.180.46.211
+Script: /root/bdk_nb/batch_test_1.sh
+Command: /bin/bash /root/bdk_nb/batch_test_1.sh
+Start Time: 2026-01-09T15:16:52.837958
+==================================================
+
+Processing file: /root/bdk_nb/input/test.csv
+3 /root/bdk_nb/input/test.csv
+-rw-r--r-- 1 root root 73 Jan  9 13:16 /root/bdk_nb/input/test.csv
+Done
+
+==================================================
+End Time: 2026-01-09T15:16:54.320915
+Exit Code: 0

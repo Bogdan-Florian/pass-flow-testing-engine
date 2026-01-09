@@ -1,0 +1,27 @@
+version: 1
+
+database:
+  connection_url: postgresql://user:pass@host/db   # change to your Postgres URL
+
+sftp:
+  host: your-remote-host     # change to your Linux host/IP
+  port: 22
+  username: your-user        # change
+  password: your-password    # change
+
+ssh:
+  host: your-remote-host     # change to your Linux host/IP
+  port: 22
+  username: your-user        # change
+  password: your-password    # change
+  os: Linux                  # run .sh on remote Linux
+  shell: /bin/bash           # remote shell to run .sh
+
+suites:
+  - name: win_remote_template
+    enabled: true
+    critical: false
+    config: flow_tests/win_remote_template/config.yaml
+
+reporting:
+  output_dir: reports

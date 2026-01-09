@@ -1,0 +1,27 @@
+version: 1
+
+database:
+  connection_url: sqlite:///flow_tests/remote_insert_mock/remote_insert_mock.db
+
+sftp:
+  host: 157.180.46.211
+  port: 22
+  username: root
+  password: ArbqsLJEmwFvkNb9dFcM1
+
+ssh:
+  host: 157.180.46.211
+  port: 22
+  username: root
+  password: ArbqsLJEmwFvkNb9dFcM1
+  os: Linux
+  shell: /bin/bash
+
+suites:
+  - name: remote_insert_mock
+    enabled: true
+    critical: false
+    config: flow_tests/remote_insert_mock/config.yaml
+
+reporting:
+  output_dir: reports

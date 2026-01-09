@@ -1,0 +1,46 @@
+{
+  "summary": {
+    "total_rows": 1,
+    "passed_rows": 1,
+    "failed_rows": 0,
+    "pass_rate": 100.0,
+    "execution_time_seconds": 0.0,
+    "timestamp": "2026-01-09T15:14:24.261083"
+  },
+  "failures": [],
+  "all_results": [
+    {
+      "row_number": 1,
+      "csv_data": {
+        "dummy": "hello"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "ping_db",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT 1 AS ok"
+        }
+      ]
+    }
+  ],
+  "batch_execution": {
+    "total_batches": 1,
+    "successful_batches": 1,
+    "failed_batches": 0,
+    "batches": [
+      {
+        "batch_name": "RemoteBatch",
+        "script": "/root/bdk_nb/batch_test_1.sh",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 2.14,
+        "log_file": "reports\\remote_smoke\\remote_batch.log",
+        "timestamp": "2026-01-09T15:14:24.246172",
+        "start_time": "2026-01-09T15:14:22.103520",
+        "end_time": "2026-01-09T15:14:24.246172"
+      }
+    ]
+  }
+}

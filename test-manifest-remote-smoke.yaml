@@ -1,0 +1,27 @@
+version: 1
+
+database:
+  connection_url: sqlite:///remote_smoke.db
+
+sftp:
+  host: 157.180.46.211
+  port: 22
+  username: root
+  password: ArbqsLJEmwFvkNb9dFcM1
+
+ssh:
+  host: 157.180.46.211
+  port: 22
+  username: root
+  password: ArbqsLJEmwFvkNb9dFcM1
+  os: Linux
+  shell: /bin/bash
+
+suites:
+  - name: remote_smoke
+    enabled: true
+    critical: false
+    config: flow_tests/remote_smoke/config.yaml
+
+reporting:
+  output_dir: reports

@@ -16,7 +16,7 @@ from csv_processor import CSVProcessor
 from validator import Validator
 from reporter import Reporter
 from aggregate_reporter import AggregateReporter
-from batch_executor import BatchExecutor  # NEW: Import BatchExecutor
+from batch_executor import BatchExecutor, LocalCopyDelivery, SftpDelivery, SshRunner  # NEW: Import BatchExecutor
 
 # A sensible default if date_format is ever omitted from a suite's config in the manifest
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
@@ -113,9 +113,15 @@ class SuiteRunner:
                 suite_specific_output_dir = suite_report_path.parent
 
                 print(f"  Batch output directory: {suite_specific_output_dir}")
+                input_delivery = self._build_input_delivery()
+                remote_runner = self._build_remote_runner()
+                os_name = remote_runner.os_name if remote_runner else None
                 executor = BatchExecutor(
                         suite_name=suite_name,
-                        output_dir=suite_specific_output_dir
+                        output_dir=suite_specific_output_dir,
+                        input_delivery=input_delivery,
+                        os_name=os_name,
+                        remote_runner=remote_runner
                     )
                 # Batches might need access to the CSV file path
                 csv_file_for_batches = csv_source_path
@@ -291,6 +297,34 @@ class SuiteRunner:
                 user = creds.split(':')[0]
                 return f"{protocol}://{user}:****@{parts[1]}"
         return url
+
+    def _build_input_delivery(self):
+        """Select input delivery mechanism based on manifest."""
+        sftp_cfg = self.manifest.get('sftp')
+        if not sftp_cfg:
+            return LocalCopyDelivery()
+        return SftpDelivery(
+            host=sftp_cfg.get('host'),
+            port=sftp_cfg.get('port', 22),
+            username=sftp_cfg.get('username'),
+            password=sftp_cfg.get('password'),
+            private_key=sftp_cfg.get('private_key')
+        )
+
+    def _build_remote_runner(self):
+        """Select remote runner (SSH) if configured."""
+        ssh_cfg = self.manifest.get('ssh')
+        if not ssh_cfg:
+            return None
+        return SshRunner(
+            host=ssh_cfg.get('host'),
+            port=ssh_cfg.get('port', 22),
+            username=ssh_cfg.get('username'),
+            password=ssh_cfg.get('password'),
+            private_key=ssh_cfg.get('private_key'),
+            os_name=ssh_cfg.get('os', 'Linux'),
+            shell=ssh_cfg.get('shell')
+        )
 
 def main():
     """Main entry point for suite runner"""

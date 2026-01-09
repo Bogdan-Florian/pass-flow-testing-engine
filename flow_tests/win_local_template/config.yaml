@@ -1,0 +1,37 @@
+file:
+  path: test.csv
+  delimiter: '|'
+  encoding: utf-8
+
+batches:
+  - name: Batch 1 (ingest)
+    script: C:/path/to/your/batch1            # set to your .bat base path (no .bat suffix needed)
+    copy_input_file_to: C:/path/to/your/input # set to the folder where batch1 expects the file
+    log_file: batch1.log
+  - name: Batch 2
+    script: C:/path/to/your/batch2
+    log_file: batch2.log
+  - name: Batch 3
+    script: C:/path/to/your/batch3
+    log_file: batch3.log
+
+variables:
+  policy_number: ${row.PolicyNumber}
+  amount: ${row.Amount}:decimal
+  status: ${row.Status}
+
+validations:
+  - name: policy_exists
+    sql: |
+      SELECT policy_number, amount, status
+      FROM policies
+      WHERE policy_number = :policy_number
+    expect:
+      row_count: 1
+      columns:
+        amount: ${amount}
+        status: ${status}
+
+execution:
+  validation_copy_path: validation_copy/test.csv
+  stop_on_first_error: false

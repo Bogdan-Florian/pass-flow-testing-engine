@@ -8,23 +8,23 @@
     "total_passed_rows": 2,
     "total_failed_rows": 0,
     "overall_pass_rate": 100.0,
-    "total_execution_time": 1.55
+    "total_execution_time": 0.14
   },
   "execution": {
-    "start_time": "2025-12-31T22:08:54.199394",
-    "end_time": "2025-12-31T22:08:55.753729",
-    "duration_seconds": 1.55
+    "start_time": "2026-01-09T15:32:45.585498",
+    "end_time": "2026-01-09T15:32:45.729128",
+    "duration_seconds": 0.14
   },
   "suite_results": [
     {
-      "name": "postgres_flow",
+      "name": "system_flow",
       "passed": true,
       "total_rows": 2,
       "passed_rows": 2,
       "failed_rows": 0,
       "pass_rate": 100.0,
-      "execution_time_seconds": 1.55,
-      "report_file": "reports\\postgres_flow\\postgres_flow_results.json"
+      "execution_time_seconds": 0.14,
+      "report_file": "reports\\system_flow\\system_flow_results.json"
     }
   ]
 }

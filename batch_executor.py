@@ -8,9 +8,12 @@ import subprocess
 import shutil
 import platform
 import os
+import stat
 from pathlib import Path
 from datetime import datetime
+from typing import Optional
 
+import paramiko
 
 class InputDelivery:
     """Interface for input delivery implementations."""
@@ -30,15 +33,167 @@ class LocalCopyDelivery(InputDelivery):
         dest_dir = Path(destination)
         dest_dir.mkdir(parents=True, exist_ok=True)
 
+        # Clear existing files in destination
+        for item in dest_dir.iterdir():
+            try:
+                if item.is_file():
+                    item.unlink()
+            except Exception:
+                pass
+
         dest_file = dest_dir / source.name
         shutil.copy2(source, dest_file)
         return True, None
 
 
+class SftpDelivery(InputDelivery):
+    """SFTP delivery implementation for remote targets."""
+
+    def __init__(
+        self,
+        host: str,
+        port: int = 22,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        private_key: Optional[str] = None,
+    ):
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
+        self.private_key = private_key
+
+    def deliver(self, input_path, destination):
+        source = Path(input_path)
+        if not source.exists():
+            return False, f"Source file not found: {input_path}"
+
+        transport = None
+        try:
+            transport = paramiko.Transport((self.host, self.port))
+            if self.private_key:
+                key = paramiko.RSAKey.from_private_key_file(self.private_key)
+                transport.connect(username=self.username, pkey=key)
+            else:
+                transport.connect(username=self.username, password=self.password)
+
+            sftp = paramiko.SFTPClient.from_transport(transport)
+
+            remote_dir = Path(destination).as_posix().rstrip('/')
+            remote_file = f"{remote_dir}/{source.name}"
+
+            self._ensure_remote_dir(sftp, remote_dir)
+            self._clear_remote_dir(sftp, remote_dir)
+            sftp.put(str(source), remote_file)
+            return True, None
+        except Exception as e:
+            return False, f"SFTP error: {e}"
+        finally:
+            if transport:
+                transport.close()
+
+    def _ensure_remote_dir(self, sftp, remote_dir: str):
+        if not remote_dir:
+            return
+        parts = remote_dir.strip('/').split('/')
+        path_so_far = ''
+        for part in parts:
+            path_so_far += '/' + part
+            try:
+                sftp.chdir(path_so_far)
+            except IOError:
+                sftp.mkdir(path_so_far)
+
+    def _clear_remote_dir(self, sftp, remote_dir: str):
+        try:
+            for entry in sftp.listdir_attr(remote_dir):
+                name = entry.filename
+                full_path = f"{remote_dir}/{name}"
+                # Remove files only; leave subdirectories intact
+                if not stat.S_ISDIR(entry.st_mode):
+                    try:
+                        sftp.remove(full_path)
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+
+
+class SshRunner:
+    """Remote script runner over SSH."""
+
+    def __init__(
+        self,
+        host: str,
+        port: int = 22,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        private_key: Optional[str] = None,
+        os_name: str = "Linux",
+        shell: Optional[str] = None,
+    ):
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
+        self.private_key = private_key
+        self.os_name = os_name
+        self.shell = shell
+
+    def run(self, script_path, log_path, command_builder):
+        client = None
+        try:
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            if self.private_key:
+                key = paramiko.RSAKey.from_private_key_file(self.private_key)
+                client.connect(self.host, port=self.port, username=self.username, pkey=key)
+            else:
+                client.connect(self.host, port=self.port, username=self.username, password=self.password)
+
+            command = command_builder(script_path, self.os_name, self.shell)
+            full_command = " ".join(command)
+
+            with open(log_path, 'w') as log_file:
+                log_file.write(f"=== Remote Batch Execution Log ===\n")
+                log_file.write(f"Host: {self.host}\n")
+                log_file.write(f"Script: {script_path}\n")
+                log_file.write(f"Command: {full_command}\n")
+                log_file.write(f"Start Time: {datetime.now().isoformat()}\n")
+                log_file.write(f"{'='*50}\n\n")
+
+                stdin, stdout, stderr = client.exec_command(full_command)
+                out_data = stdout.read().decode('utf-8')
+                err_data = stderr.read().decode('utf-8')
+                if out_data:
+                    log_file.write(out_data)
+                if err_data:
+                    log_file.write("\n-- STDERR --\n")
+                    log_file.write(err_data)
+
+                exit_code = stdout.channel.recv_exit_status()
+
+                log_file.write(f"\n{'='*50}\n")
+                log_file.write(f"End Time: {datetime.now().isoformat()}\n")
+                log_file.write(f"Exit Code: {exit_code}\n")
+
+            return exit_code, None
+        except Exception as e:
+            try:
+                with open(log_path, 'a') as log_file:
+                    log_file.write(f"\n\nERROR: {e}\n")
+            except Exception:
+                pass
+            return -1, f"SSH error: {e}"
+        finally:
+            if client:
+                client.close()
+
+
 class BatchExecutor:
     """Executes batch scripts with logging and error handling"""
     
-    def __init__(self, suite_name, output_dir="reports", input_delivery=None, os_name=None, shell=None):
+    def __init__(self, suite_name, output_dir="reports", input_delivery=None, os_name=None, shell=None, remote_runner=None):
         """
         Initialize batch executor
         
@@ -52,6 +207,7 @@ class BatchExecutor:
         self.input_delivery = input_delivery or LocalCopyDelivery()
         self.os_name = os_name or platform.system()
         self.shell = shell
+        self.remote_runner = remote_runner
         
         self.batch_results = []
     
@@ -89,13 +245,14 @@ class BatchExecutor:
             print(f"  Platform: {self.os_name} -> Resolved Script: {script_path}")
             # --- MODIFICATION END ---
             
-            # Validate script exists
-            is_valid, error_msg = self._validate_script(script_path)
-            if not is_valid:
-                print(f"  âœ— {error_msg}")
-                self._record_failure(batch_name, str(script_path), error_msg)
-                return False, self.batch_results
-            
+            # Validate script exists (local only)
+            if not self.remote_runner:
+                is_valid, error_msg = self._validate_script(script_path)
+                if not is_valid:
+                    print(f"  FAIL {error_msg}")
+                    self._record_failure(batch_name, str(script_path), error_msg)
+                    return False, self.batch_results
+
             # Handle input file copying if required
             if batch_config.get('copy_input_file_to'):
                 copy_dest = batch_config['copy_input_file_to']
@@ -157,6 +314,8 @@ class BatchExecutor:
             return False, str(e)
 
     def _resolve_script_path(self, script_base_path):
+        if self.remote_runner and self.os_name != "Windows":
+            return str(Path(script_base_path).with_suffix('.sh').as_posix())
         if self.os_name == "Windows":
             return Path(script_base_path).with_suffix('.bat')
         return Path(script_base_path).with_suffix('.sh')
@@ -180,6 +339,9 @@ class BatchExecutor:
         Execute shell script and capture output to log file.
         This no longer modifies script permissions.
         """
+        if self.remote_runner:
+            return self.remote_runner.run(script_path, log_path, self.build_command)
+
         try:
             script = Path(script_path)
             

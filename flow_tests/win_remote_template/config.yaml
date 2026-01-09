@@ -1,0 +1,37 @@
+file:
+  path: test.csv
+  delimiter: '|'
+  encoding: utf-8
+
+batches:
+  - name: Batch 1 (ingest)
+    script: /opt/remote/batches/batch1              # remote base path (no .sh suffix)
+    copy_input_file_to: /opt/remote/batches/batch1/input  # remote input folder for batch1
+    log_file: batch1.log
+  - name: Batch 2
+    script: /opt/remote/batches/batch2
+    log_file: batch2.log
+  - name: Batch 3
+    script: /opt/remote/batches/batch3
+    log_file: batch3.log
+
+variables:
+  policy_number: ${row.PolicyNumber}
+  amount: ${row.Amount}:decimal
+  status: ${row.Status}
+
+validations:
+  - name: policy_exists
+    sql: |
+      SELECT policy_number, amount, status
+      FROM policies
+      WHERE policy_number = :policy_number
+    expect:
+      row_count: 1
+      columns:
+        amount: ${amount}
+        status: ${status}
+
+execution:
+  validation_copy_path: validation_copy/test.csv
+  stop_on_first_error: false

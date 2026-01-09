@@ -1,0 +1,13 @@
+version: 1
+
+database:
+  connection_url: postgresql://user:pass@host/db   # change to your Postgres URL
+
+suites:
+  - name: win_local_template
+    enabled: true
+    critical: false
+    config: flow_tests/win_local_template/config.yaml
+
+reporting:
+  output_dir: reports

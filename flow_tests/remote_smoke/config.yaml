@@ -1,0 +1,25 @@
+file:
+  path: test.csv
+  delimiter: ','
+  encoding: utf-8
+
+batches:
+  - name: RemoteBatch
+    script: /root/bdk_nb/batch_test_1
+    copy_input_file_to: /root/bdk_nb/input
+    log_file: remote_batch.log
+
+variables:
+  dummy: ${row.dummy}
+
+validations:
+  - name: ping_db
+    sql: "SELECT 1 AS ok"
+    expect:
+      row_count: 1
+      columns:
+        ok: 1
+
+execution:
+  validation_copy_path: validation_copy/test.csv
+  stop_on_first_error: false

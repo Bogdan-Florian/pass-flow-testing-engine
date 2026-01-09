@@ -14,7 +14,7 @@ python -m venv .venv
 .\.venv\Scripts\activate
 pip install --no-index --find-links deps -r requirements.txt
 ```
-(?deps? is a folder of .whl files; keep it alongside the repo.)
+("deps" is a folder of .whl files; keep it alongside the repo.)
 
 ## 2) Run a bundled SQLite example (system_flow)
 ```
@@ -29,6 +29,34 @@ Update `test-manifest-analyst-example.yaml` with your Postgres URL, then:
 python run_suites.py test-manifest-analyst-example.yaml
 ```
 Config template: `flow_tests/analyst_example/config.yaml` (edit `batches.script`, `copy_input_file_to`, and SQL/expectations).
+
+### Optional: SFTP delivery
+If the batch machine is remote, you can configure SFTP in the manifest (next to `database`):
+```
+database:
+  connection_url: postgresql://user:pass@host/db
+sftp:
+  host: your-sftp-host
+  port: 22
+  username: your-user
+  password: your-password
+  # private_key: /path/to/key (optional)
+```
+Keep `copy_input_file_to` in the suite config as the remote target directory; the runner uploads the CSV there before batches run.
+
+### Optional: Remote batch execution (SSH)
+If batches must run on the remote machine, add an `ssh` block to the manifest:
+```
+ssh:
+  host: your-ssh-host
+  port: 22
+  username: your-user
+  password: your-password
+  # private_key: /path/to/key (optional)
+  # os: Linux (default)  # adjust if the remote OS is different
+  # shell: /bin/bash     # optional override
+```
+With `ssh` configured, batch scripts are executed remotely via SSH; `copy_input_file_to` points to the remote directory where the script will find the CSV.
 
 ## 4) Run diagnostic scenarios (optional)
 ```

@@ -5,7 +5,7 @@
     "failed_rows": 0,
     "pass_rate": 100.0,
     "execution_time_seconds": 0.0,
-    "timestamp": "2025-12-31T22:07:59.068264"
+    "timestamp": "2026-01-09T15:32:45.729128"
   },
   "failures": [],
   "all_results": [
@@ -54,11 +54,11 @@
         "script": "flow_tests\\system_flow\\batches\\step1.bat",
         "status": "SUCCESS",
         "exit_code": 0,
-        "duration_seconds": 0.05,
+        "duration_seconds": 0.04,
         "log_file": "reports\\system_flow\\step1.log",
-        "timestamp": "2025-12-31T22:07:58.974517",
-        "start_time": "2025-12-31T22:07:58.924237",
-        "end_time": "2025-12-31T22:07:58.974517"
+        "timestamp": "2026-01-09T15:32:45.640290",
+        "start_time": "2026-01-09T15:32:45.595863",
+        "end_time": "2026-01-09T15:32:45.640290"
       },
       {
         "batch_name": "Step 2",
@@ -67,9 +67,9 @@
         "exit_code": 0,
         "duration_seconds": 0.04,
         "log_file": "reports\\system_flow\\step2.log",
-        "timestamp": "2025-12-31T22:07:59.015102",
-        "start_time": "2025-12-31T22:07:58.974517",
-        "end_time": "2025-12-31T22:07:59.015102"
+        "timestamp": "2026-01-09T15:32:45.677819",
+        "start_time": "2026-01-09T15:32:45.640290",
+        "end_time": "2026-01-09T15:32:45.677819"
       },
       {
         "batch_name": "Step 3",
@@ -78,9 +78,9 @@
         "exit_code": 0,
         "duration_seconds": 0.04,
         "log_file": "reports\\system_flow\\step3.log",
-        "timestamp": "2025-12-31T22:07:59.056246",
-        "start_time": "2025-12-31T22:07:59.015102",
-        "end_time": "2025-12-31T22:07:59.056246"
+        "timestamp": "2026-01-09T15:32:45.729128",
+        "start_time": "2026-01-09T15:32:45.688084",
+        "end_time": "2026-01-09T15:32:45.729128"
       }
     ]
   }

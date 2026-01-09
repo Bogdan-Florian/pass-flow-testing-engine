@@ -1,0 +1,65 @@
+{
+  "summary": {
+    "total_rows": 2,
+    "passed_rows": 2,
+    "failed_rows": 0,
+    "pass_rate": 100.0,
+    "execution_time_seconds": 0.0,
+    "timestamp": "2026-01-09T15:16:54.325645"
+  },
+  "failures": [],
+  "all_results": [
+    {
+      "row_number": 1,
+      "csv_data": {
+        "PolicyNumber": "POL-301",
+        "Amount": "123.45",
+        "Status": "ACTIVE"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "policy_exists",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT policy_number, amount, status\nFROM policies\nWHERE policy_number = :policy_number\n"
+        }
+      ]
+    },
+    {
+      "row_number": 2,
+      "csv_data": {
+        "PolicyNumber": "POL-302",
+        "Amount": "250.00",
+        "Status": "PENDING"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "policy_exists",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT policy_number, amount, status\nFROM policies\nWHERE policy_number = :policy_number\n"
+        }
+      ]
+    }
+  ],
+  "batch_execution": {
+    "total_batches": 1,
+    "successful_batches": 1,
+    "failed_batches": 0,
+    "batches": [
+      {
+        "batch_name": "RemoteInsert",
+        "script": "/root/bdk_nb/batch_test_1.sh",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 2.39,
+        "log_file": "reports\\remote_insert_mock\\remote_insert.log",
+        "timestamp": "2026-01-09T15:16:54.320915",
+        "start_time": "2026-01-09T15:16:51.926670",
+        "end_time": "2026-01-09T15:16:54.320915"
+      }
+    ]
+  }
+}
