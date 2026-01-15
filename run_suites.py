@@ -12,11 +12,11 @@ from datetime import datetime
 # Assuming your other modules are available
 from manifest_loader import ManifestLoader
 from config_loader import ConfigLoader
-from csv_processor import CSVProcessor
+from file_processor import get_processor, get_modifier  # Unified file handling (CSV + Excel)
 from validator import Validator
 from reporter import Reporter
 from aggregate_reporter import AggregateReporter
-from batch_executor import BatchExecutor, LocalCopyDelivery, SftpDelivery, SshRunner  # NEW: Import BatchExecutor
+from batch_executor import BatchExecutor, LocalCopyDelivery, SftpDelivery, SshRunner
 
 # A sensible default if date_format is ever omitted from a suite's config in the manifest
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
@@ -95,21 +95,21 @@ class SuiteRunner:
         try:
             config = ConfigLoader.load(config_path)
             batch_results = []
-            csv_source_path = self._resolve_path(config['file']['path'], config_path.parent)
+            source_path = self._resolve_path(config['file']['path'], config_path.parent)
 
-            # Get CSV file settings
+            # Get file settings (works for CSV and Excel)
             has_header = config['file'].get('has_header', True)
+            file_settings = {
+                'delimiter': config['file'].get('delimiter', ','),
+                'encoding': config['file'].get('encoding', 'utf-8'),
+                'has_header': has_header,
+                'sheet': config['file'].get('sheet'),  # Excel sheet name/index
+            }
 
-            # Auto-increment primary key if configured
+            # Auto-increment primary key if configured (works for CSV and Excel)
             pk_config = config.get('primary_key', {})
             if pk_config.get('auto_increment'):
-                from csv_modifier import CSVModifier
-                modifier = CSVModifier(
-                    csv_source_path,
-                    config['file'].get('delimiter', ','),
-                    config['file'].get('encoding', 'utf-8'),
-                    has_header
-                )
+                modifier = get_modifier(source_path, **file_settings)
                 rows_modified = modifier.increment_primary_key(
                     column=pk_config.get('column'),
                     column_index=pk_config.get('column_index')
@@ -120,10 +120,10 @@ class SuiteRunner:
             if validation_copy_path:
                 validation_copy_path = self._resolve_path(validation_copy_path, config_path.parent)
                 validation_copy_path.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(csv_source_path, validation_copy_path)
-                csv_validation_path = validation_copy_path
+                shutil.copy2(source_path, validation_copy_path)
+                file_validation_path = validation_copy_path
             else:
-                csv_validation_path = csv_source_path
+                file_validation_path = source_path
 
             # Step 1 - Execute batch scripts if configured
             batch_configs = config.get('batches', [])
@@ -143,16 +143,16 @@ class SuiteRunner:
                         os_name=os_name,
                         remote_runner=remote_runner
                     )
-                # Batches might need access to the CSV file path
-                csv_file_for_batches = csv_source_path
+                # Batches might need access to the data file path
+                file_for_batches = source_path
 
                 success, batch_results = executor.execute_batches(
                     batch_configs,
-                    str(csv_file_for_batches)
+                    str(file_for_batches)
                 )
 
                 if not success:
-                    print("  ERROR BATCH EXECUTION FAILED. Skipping CSV validation.")
+                    print("  ERROR BATCH EXECUTION FAILED. Skipping validation.")
                     end_time = datetime.now()
                     execution_time = (end_time - start_time).total_seconds()
                     
@@ -175,33 +175,28 @@ class SuiteRunner:
                     print("  OK All batches completed successfully.")
 
 
-            # Step 2 - Proceed with CSV validation
-            csv_file = csv_validation_path
-            processor = CSVProcessor(
-                csv_file,
-                config['file'].get('delimiter', ','),
-                config['file'].get('encoding', 'utf-8'),
-                has_header
-            )
+            # Step 2 - Proceed with data validation (CSV or Excel)
+            data_file = file_validation_path
+            processor = get_processor(data_file, **file_settings)
             total_rows = processor.count_rows()
 
             date_format = suite_config.get('date_format', DEFAULT_DATE_FORMAT)
             timeout = config.get('execution', {}).get('timeout_seconds', 30)
-            
+
             validator = Validator(
                 db_url=self.db_url,
                 date_format=date_format,
                 timeout_seconds=timeout
             )
-            
+
             output_file = self._get_suite_report_path(suite_name, config)
             reporter = Reporter(output_file)
-            
-            # NEW: Add successful batch results to the report
+
+            # Add successful batch results to the report
             if batch_results:
                 reporter.add_batch_results(batch_results)
 
-            print(f"  CSV: {csv_file.name} ({total_rows} rows)")
+            print(f"  Data: {data_file.name} ({total_rows} rows)")
             print(f"  Validations: {len(config['validations'])}")
             print(f"  Date Format (for CSV): '{date_format}'")
 

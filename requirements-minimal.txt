@@ -6,4 +6,6 @@ SQLAlchemy>=2.0           # Database validation
 paramiko>=3.0             # SFTP/SSH remote execution
 psycopg2-binary>=2.9      # PostgreSQL support (optional)
 PyMySQL>=1.1              # MySQL support (optional)
+openpyxl>=3.1.0           # Excel .xlsx support
+xlrd>=2.0.1               # Excel .xls support
 pyinstaller>=6.0          # For building executable

@@ -40,8 +40,11 @@ def build_executable(onefile=False):
         'run_suites.py',
         'manifest_loader.py',
         'config_loader.py',
+        'file_processor.py',
         'csv_processor.py',
         'csv_modifier.py',
+        'excel_processor.py',
+        'excel_modifier.py',
         'validator.py',
         'reporter.py',
         'aggregate_reporter.py',
@@ -66,6 +69,9 @@ def build_executable(onefile=False):
         "--hidden-import", "sqlalchemy.dialects.mysql",
         # Paramiko
         "--hidden-import", "paramiko",
+        # Excel support
+        "--hidden-import", "openpyxl",
+        "--hidden-import", "xlrd",
         # Exclude unnecessary packages
         "--exclude-module", "tkinter",
         "--exclude-module", "matplotlib",

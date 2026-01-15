@@ -12,14 +12,15 @@
 4. [Creating Your First Test](#creating-your-first-test)
 5. [The Manifest File](#the-manifest-file)
 6. [The Config File](#the-config-file)
-7. [Writing CSV Test Data](#writing-csv-test-data)
-8. [Defining Variables](#defining-variables)
-9. [Writing SQL Validations](#writing-sql-validations)
-10. [Running Batch Scripts](#running-batch-scripts)
-11. [Auto-Increment Primary Keys](#auto-increment-primary-keys)
-12. [Reading the Reports](#reading-the-reports)
-13. [Common Examples](#common-examples)
-14. [Troubleshooting](#troubleshooting)
+7. [Writing Test Data (CSV and Excel)](#writing-test-data-csv-and-excel)
+8. [Using Excel Files](#using-excel-files)
+9. [Defining Variables](#defining-variables)
+10. [Writing SQL Validations](#writing-sql-validations)
+11. [Running Batch Scripts](#running-batch-scripts)
+12. [Auto-Increment Primary Keys](#auto-increment-primary-keys)
+13. [Reading the Reports](#reading-the-reports)
+14. [Common Examples](#common-examples)
+15. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -28,7 +29,7 @@
 The PASS Flow Testing Engine helps you **automatically test batch processes** that work with databases.
 
 **In simple terms:**
-1. You provide a CSV file with test data
+1. You provide a CSV or Excel file with test data
 2. The tool runs your batch scripts (which process that data)
 3. The tool checks the database to verify the batches worked correctly
 4. You get a report showing what passed and what failed
@@ -61,7 +62,7 @@ That's it! The tool will:
 1. **run_suites.exe** - The testing tool
 2. **A manifest file** (.yaml) - Tells the tool which tests to run
 3. **A config file** (.yaml) - Describes what to test
-4. **A CSV file** - Your test data
+4. **A data file** - Your test data (CSV, .xlsx, or .xls)
 5. **Batch scripts** (.bat or .sh) - The processes you want to test
 
 ---
@@ -78,20 +79,22 @@ my_tests/
 │
 ├── orders_test/                <-- A test suite folder
 │   ├── config.yaml             <-- Test configuration
-│   ├── test_data.csv           <-- Your test data
+│   ├── test_data.csv           <-- Your test data (CSV)
 │   └── batches/                <-- Batch scripts
 │       ├── import_orders.bat
 │       └── process_orders.bat
 │
 ├── customers_test/             <-- Another test suite
 │   ├── config.yaml
-│   ├── test_data.csv
+│   ├── test_data.xlsx          <-- Your test data (Excel)
 │   └── batches/
 │       └── import_customers.bat
 │
 └── reports/                    <-- Reports go here (auto-created)
     └── ...
 ```
+
+**Supported file formats:** CSV (.csv), Excel 2007+ (.xlsx), Legacy Excel (.xls)
 
 ---
 
@@ -288,9 +291,16 @@ execution:
 
 ---
 
-## Writing CSV Test Data
+## Writing Test Data (CSV and Excel)
 
-### With Headers (Recommended)
+The tool supports three file formats for test data:
+- **CSV files** (.csv) - Simple text files, editable in any text editor
+- **Excel 2007+ files** (.xlsx) - Modern Excel format
+- **Legacy Excel files** (.xls) - Older Excel format (Excel 97-2003)
+
+### CSV Files
+
+#### With Headers (Recommended)
 
 ```
 OrderID|CustomerName|Amount|OrderDate|Status
@@ -311,7 +321,7 @@ variables:
   amount: ${row.Amount}:decimal
 ```
 
-### Without Headers
+#### Without Headers
 
 ```
 ORD-0001|John Smith|150.00|2024-01-15|NEW
@@ -333,7 +343,7 @@ variables:
   status: ${row.4}
 ```
 
-### Tips for CSV Files
+#### Tips for CSV Files
 
 1. **Use pipe `|` delimiter** - Easier to read than commas
 2. **Avoid special characters** - Quotes, newlines can cause issues
@@ -342,9 +352,134 @@ variables:
 
 ---
 
+## Using Excel Files
+
+Excel files (.xlsx and .xls) are a great alternative to CSV files, especially when:
+- Your test data is already in Excel format
+- You need to preserve formatting or formulas
+- You're working with multiple sheets
+
+### Basic Excel Configuration
+
+```yaml
+file:
+  path: test_data.xlsx       # .xlsx or .xls
+  has_header: true           # First row contains headers
+
+variables:
+  order_id: ${row.OrderID}
+  amount: ${row.Amount}:decimal
+```
+
+**Note:** The `delimiter` and `encoding` settings are ignored for Excel files.
+
+### Working with Specific Sheets
+
+If your Excel file has multiple sheets, you can specify which sheet to use:
+
+#### By Sheet Name
+```yaml
+file:
+  path: test_data.xlsx
+  sheet: "Orders"            # Use sheet named "Orders"
+  has_header: true
+```
+
+#### By Sheet Index (0-based)
+```yaml
+file:
+  path: test_data.xlsx
+  sheet: 0                   # First sheet (default)
+  has_header: true
+```
+
+```yaml
+file:
+  path: test_data.xlsx
+  sheet: 2                   # Third sheet
+  has_header: true
+```
+
+### Excel Without Headers
+
+Just like CSV files, Excel files can be used without header rows:
+
+```yaml
+file:
+  path: test_data.xlsx
+  has_header: false
+
+variables:
+  order_id: ${row.0}         # First column
+  customer: ${row.1}         # Second column
+  amount: ${row.2}:decimal   # Third column
+```
+
+### Auto-Increment in Excel Files
+
+Primary key auto-increment works the same way for Excel files:
+
+```yaml
+file:
+  path: test_data.xlsx
+  has_header: true
+
+primary_key:
+  column: OrderID            # Or column_index: 0 for no headers
+  auto_increment: true
+```
+
+### Tips for Excel Files
+
+1. **Use .xlsx format** - It's more reliable than legacy .xls
+2. **Avoid merged cells** - They can cause reading issues
+3. **Keep data simple** - Avoid complex formulas in test data columns
+4. **Check data types** - Excel may auto-format numbers as dates or text
+5. **First sheet is default** - If you don't specify `sheet`, the first sheet is used
+6. **Numeric values become strings** - All values are read as text (like CSV)
+
+### Complete Excel Example
+
+**test_data.xlsx (Sheet: "OrderData"):**
+
+| OrderID | Customer | Amount | OrderDate |
+|---------|----------|--------|-----------|
+| ORD-0001 | John Smith | 150.00 | 2024-01-15 |
+| ORD-0002 | Jane Doe | 275.50 | 2024-01-16 |
+
+**config.yaml:**
+```yaml
+file:
+  path: test_data.xlsx
+  sheet: "OrderData"
+  has_header: true
+
+primary_key:
+  column: OrderID
+  auto_increment: true
+
+variables:
+  order_id: ${row.OrderID}
+  customer: ${row.Customer}
+  amount: ${row.Amount}:decimal
+  order_date: ${row.OrderDate}:date
+
+validations:
+  - name: order_imported
+    sql: |
+      SELECT * FROM orders WHERE order_id = :order_id
+    expect:
+      row_count: 1
+      columns:
+        customer_name: ${customer}
+        total_amount: ${amount}
+```
+
+---
+
 ## Defining Variables
 
-Variables let you extract values from your CSV and use them in SQL queries.
+Variables let you extract values from your data file (CSV or Excel) and use them in SQL queries.
 
 ### Basic Syntax
 
@@ -859,6 +994,30 @@ validations:
 - Primary key must end with digits: `ORD-001` (good), `ORDER-A` (bad)
 - Tool will skip rows without numeric suffix
 
+### Excel File Issues
+
+**Problem:** "Sheet not found" error.
+
+**Solution:**
+- Check the exact sheet name (case-sensitive)
+- Use sheet index (0, 1, 2...) instead of name
+- Verify sheet exists by opening file in Excel
+
+**Problem:** "Unsupported file format" error for .xlsx or .xls.
+
+**Solution:**
+- Make sure the file is a valid Excel file
+- Don't use .xlsm or .xlsb formats
+- Try re-saving the file as .xlsx
+
+**Problem:** Values appear wrong or empty from Excel.
+
+**Solution:**
+- Check for merged cells (not supported)
+- Verify data is in the first sheet (or specify `sheet:`)
+- Make sure there are no hidden rows/columns with data
+- Excel dates may need `:date` type conversion
+
 ---
 
 ## Getting Help
@@ -906,7 +1065,15 @@ expect:
     - column_name           # Must not be null
 ```
 
-### File Delimiters
+### Supported File Formats
+
+| Format | Extension | Notes |
+|--------|-----------|-------|
+| CSV | `.csv` | Text file with delimiter |
+| Excel 2007+ | `.xlsx` | Recommended for Excel |
+| Legacy Excel | `.xls` | Excel 97-2003 format |
+
+### File Delimiters (CSV only)
 
 | Delimiter | Config Value |
 |-----------|--------------|
@@ -914,6 +1081,15 @@ expect:
 | Comma     | `delimiter: ','` |
 | Tab       | `delimiter: '\t'` |
 | Semicolon | `delimiter: ';'` |
+
+### Excel Sheet Selection
+
+```yaml
+file:
+  path: data.xlsx
+  sheet: "SheetName"    # By name
+  sheet: 0              # By index (0 = first sheet)
+```
 
 ---
 
