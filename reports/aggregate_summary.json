@@ -4,27 +4,27 @@
     "passed_suites": 1,
     "failed_suites": 0,
     "suite_pass_rate": 100.0,
-    "total_rows_validated": 2,
-    "total_passed_rows": 2,
+    "total_rows_validated": 5,
+    "total_passed_rows": 5,
     "total_failed_rows": 0,
     "overall_pass_rate": 100.0,
-    "total_execution_time": 0.14
+    "total_execution_time": 0.1
   },
   "execution": {
-    "start_time": "2026-01-09T15:32:45.585498",
-    "end_time": "2026-01-09T15:32:45.729128",
-    "duration_seconds": 0.14
+    "start_time": "2026-01-15T20:23:55.066229",
+    "end_time": "2026-01-15T20:23:55.166849",
+    "duration_seconds": 0.1
   },
   "suite_results": [
     {
-      "name": "system_flow",
+      "name": "Full Example - Order Processing",
       "passed": true,
-      "total_rows": 2,
-      "passed_rows": 2,
+      "total_rows": 5,
+      "passed_rows": 5,
       "failed_rows": 0,
       "pass_rate": 100.0,
-      "execution_time_seconds": 0.14,
-      "report_file": "reports\\system_flow\\system_flow_results.json"
+      "execution_time_seconds": 0.1,
+      "report_file": "reports\\full_example_-_order_processing\\full_example_-_order_processing_results.json"
     }
   ]
 }

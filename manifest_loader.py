@@ -21,7 +21,7 @@ class ManifestLoader:
         Returns:
             dict: Parsed manifest
         """
-        with open(manifest_path, 'r') as f:
+        with open(manifest_path, 'r', encoding='utf-8') as f:
             manifest = yaml.safe_load(f)
         
         ManifestLoader._validate_manifest(manifest)

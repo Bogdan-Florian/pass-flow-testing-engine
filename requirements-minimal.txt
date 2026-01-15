@@ -1,0 +1,9 @@
+# Minimal requirements for building executable
+# Only includes what run_suites.py actually needs
+
+PyYAML>=6.0               # Config/manifest loading
+SQLAlchemy>=2.0           # Database validation
+paramiko>=3.0             # SFTP/SSH remote execution
+psycopg2-binary>=2.9      # PostgreSQL support (optional)
+PyMySQL>=1.1              # MySQL support (optional)
+pyinstaller>=6.0          # For building executable

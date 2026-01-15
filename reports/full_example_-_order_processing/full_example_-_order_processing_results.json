@@ -1,0 +1,223 @@
+{
+  "summary": {
+    "total_rows": 5,
+    "passed_rows": 5,
+    "failed_rows": 0,
+    "pass_rate": 100.0,
+    "execution_time_seconds": 0.0,
+    "timestamp": "2026-01-15T20:23:55.166849"
+  },
+  "failures": [],
+  "all_results": [
+    {
+      "row_number": 1,
+      "csv_data": {
+        "0": "John Smith",
+        "1": "PROD-001",
+        "2": "5",
+        "3": "29.99",
+        "4": "149.95",
+        "5": "ORD-000002",
+        "6": "2024-01-15",
+        "7": "PENDING"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "order_imported",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, customer_name, product_code, quantity, unit_price, total_amount\nFROM orders\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "payment_processed",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, payment_status, amount_charged\nFROM payments\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "order_finalized",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, status, notification_sent\nFROM orders\nWHERE order_id = :order_id\n"
+        }
+      ]
+    },
+    {
+      "row_number": 2,
+      "csv_data": {
+        "0": "Jane Doe",
+        "1": "PROD-002",
+        "2": "3",
+        "3": "49.99",
+        "4": "149.97",
+        "5": "ORD-000003",
+        "6": "2024-01-16",
+        "7": "PENDING"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "order_imported",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, customer_name, product_code, quantity, unit_price, total_amount\nFROM orders\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "payment_processed",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, payment_status, amount_charged\nFROM payments\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "order_finalized",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, status, notification_sent\nFROM orders\nWHERE order_id = :order_id\n"
+        }
+      ]
+    },
+    {
+      "row_number": 3,
+      "csv_data": {
+        "0": "Bob Wilson",
+        "1": "PROD-003",
+        "2": "10",
+        "3": "9.99",
+        "4": "99.90",
+        "5": "ORD-000004",
+        "6": "2024-01-17",
+        "7": "PENDING"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "order_imported",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, customer_name, product_code, quantity, unit_price, total_amount\nFROM orders\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "payment_processed",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, payment_status, amount_charged\nFROM payments\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "order_finalized",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, status, notification_sent\nFROM orders\nWHERE order_id = :order_id\n"
+        }
+      ]
+    },
+    {
+      "row_number": 4,
+      "csv_data": {
+        "0": "Alice Brown",
+        "1": "PROD-001",
+        "2": "2",
+        "3": "29.99",
+        "4": "59.98",
+        "5": "ORD-000005",
+        "6": "2024-01-18",
+        "7": "PENDING"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "order_imported",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, customer_name, product_code, quantity, unit_price, total_amount\nFROM orders\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "payment_processed",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, payment_status, amount_charged\nFROM payments\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "order_finalized",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, status, notification_sent\nFROM orders\nWHERE order_id = :order_id\n"
+        }
+      ]
+    },
+    {
+      "row_number": 5,
+      "csv_data": {
+        "0": "Charlie Davis",
+        "1": "PROD-004",
+        "2": "1",
+        "3": "199.99",
+        "4": "199.99",
+        "5": "ORD-000006",
+        "6": "2024-01-19",
+        "7": "PENDING"
+      },
+      "passed": true,
+      "validations": [
+        {
+          "name": "order_imported",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, customer_name, product_code, quantity, unit_price, total_amount\nFROM orders\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "payment_processed",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, payment_status, amount_charged\nFROM payments\nWHERE order_id = :order_id\n"
+        },
+        {
+          "name": "order_finalized",
+          "passed": true,
+          "errors": [],
+          "sql_executed": "SELECT order_id, status, notification_sent\nFROM orders\nWHERE order_id = :order_id\n"
+        }
+      ]
+    }
+  ],
+  "batch_execution": {
+    "total_batches": 3,
+    "successful_batches": 3,
+    "failed_batches": 0,
+    "batches": [
+      {
+        "batch_name": "Import Order",
+        "script": "flow_tests\\full_example_no_headers\\batches\\batch1.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.02,
+        "log_file": "reports\\full_example_-_order_processing\\batch1_import.log",
+        "timestamp": "2026-01-15T20:23:55.097777",
+        "start_time": "2026-01-15T20:23:55.074741",
+        "end_time": "2026-01-15T20:23:55.097777"
+      },
+      {
+        "batch_name": "Process Payment",
+        "script": "flow_tests\\full_example_no_headers\\batches\\batch2.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.02,
+        "log_file": "reports\\full_example_-_order_processing\\batch2_payment.log",
+        "timestamp": "2026-01-15T20:23:55.115752",
+        "start_time": "2026-01-15T20:23:55.097777",
+        "end_time": "2026-01-15T20:23:55.115752"
+      },
+      {
+        "batch_name": "Finalize Order",
+        "script": "flow_tests\\full_example_no_headers\\batches\\batch3.bat",
+        "status": "SUCCESS",
+        "exit_code": 0,
+        "duration_seconds": 0.03,
+        "log_file": "reports\\full_example_-_order_processing\\batch3_finalize.log",
+        "timestamp": "2026-01-15T20:23:55.146366",
+        "start_time": "2026-01-15T20:23:55.115752",
+        "end_time": "2026-01-15T20:23:55.146366"
+      }
+    ]
+  }
+}

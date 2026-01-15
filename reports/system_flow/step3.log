@@ -1,21 +1,26 @@
 Step 3 starting
-ERROR: Input redirection is not supported, exiting the process immediately.
+timeout: invalid time interval ‘/t’
+Try 'timeout --help' for more information.
 Step 3 progress 10%
-ERROR: Input redirection is not supported, exiting the process immediately.
+timeout: invalid time interval ‘/t’
+Try 'timeout --help' for more information.
 Step 3 progress 20%
-ERROR: Input redirection is not supported, exiting the process immediately.
+timeout: invalid time interval ‘/t’
+Try 'timeout --help' for more information.
 Step 3 progress 30%
-ERROR: Input redirection is not supported, exiting the process immediately.
+timeout: invalid time interval ‘/t’
+Try 'timeout --help' for more information.
 Step 3 progress 40%
-ERROR: Input redirection is not supported, exiting the process immediately.
+timeout: invalid time interval ‘/t’
+Try 'timeout --help' for more information.
 Step 3 progress 50%
 Step 3 complete
 === Batch Execution Log ===
 Script: flow_tests\system_flow\batches\step3.bat
-Start Time: 2026-01-09T15:32:45.688084
+Start Time: 2026-01-15T19:54:23.102994
 ==================================================
 
 
 ==================================================
-End Time: 2026-01-09T15:32:45.729128
+End Time: 2026-01-15T19:54:23.161703
 Exit Code: 0

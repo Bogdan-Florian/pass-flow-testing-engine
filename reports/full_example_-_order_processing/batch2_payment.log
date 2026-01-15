@@ -1,0 +1,16 @@
+[BATCH2] Starting payment processing...
+[BATCH2] Parameter 1: --payment-gateway
+[BATCH2] Parameter 2: mock
+[BATCH2] Connecting to payment gateway...
+timeout: invalid time interval ‘/t’
+Try 'timeout --help' for more information.
+[BATCH2] Payment processed successfully.
+=== Batch Execution Log ===
+Script: flow_tests\full_example_no_headers\batches\batch2.bat
+Start Time: 2026-01-15T20:23:55.097777
+==================================================
+
+
+==================================================
+End Time: 2026-01-15T20:23:55.115752
+Exit Code: 0

@@ -96,6 +96,26 @@ class SuiteRunner:
             config = ConfigLoader.load(config_path)
             batch_results = []
             csv_source_path = self._resolve_path(config['file']['path'], config_path.parent)
+
+            # Get CSV file settings
+            has_header = config['file'].get('has_header', True)
+
+            # Auto-increment primary key if configured
+            pk_config = config.get('primary_key', {})
+            if pk_config.get('auto_increment'):
+                from csv_modifier import CSVModifier
+                modifier = CSVModifier(
+                    csv_source_path,
+                    config['file'].get('delimiter', ','),
+                    config['file'].get('encoding', 'utf-8'),
+                    has_header
+                )
+                rows_modified = modifier.increment_primary_key(
+                    column=pk_config.get('column'),
+                    column_index=pk_config.get('column_index')
+                )
+                print(f"  Auto-incremented primary key in {rows_modified} row(s)")
+
             validation_copy_path = config.get('execution', {}).get('validation_copy_path')
             if validation_copy_path:
                 validation_copy_path = self._resolve_path(validation_copy_path, config_path.parent)
@@ -105,7 +125,7 @@ class SuiteRunner:
             else:
                 csv_validation_path = csv_source_path
 
-            # NEW: Step 1 - Execute batch scripts if configured
+            # Step 1 - Execute batch scripts if configured
             batch_configs = config.get('batches', [])
             if batch_configs:
                 print(f"  Found {len(batch_configs)} batch(es) to execute...")
@@ -160,7 +180,8 @@ class SuiteRunner:
             processor = CSVProcessor(
                 csv_file,
                 config['file'].get('delimiter', ','),
-                config['file'].get('encoding', 'utf-8')
+                config['file'].get('encoding', 'utf-8'),
+                has_header
             )
             total_rows = processor.count_rows()
 

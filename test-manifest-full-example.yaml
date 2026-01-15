@@ -1,0 +1,33 @@
+# Full Example Manifest - No Headers CSV with Auto-Increment Primary Key
+#
+# This example demonstrates:
+# - CSV without headers (column access by index)
+# - Primary key auto-increment (column index 5)
+# - 3 batches, each with 2 parameters
+# - Multiple SQL validations
+#
+# To run this example:
+#   1. Initialize the database: python flow_tests/full_example_no_headers/init_db.py
+#   2. Run the suite: python run_suites.py test-manifest-full-example.yaml
+#
+# After each run, the primary key (order_id) in column 5 will be incremented:
+#   ORD-000001 -> ORD-000002 -> ORD-000003 -> etc.
+
+version: 1
+
+database:
+  connection_url: sqlite:///flow_tests/full_example_no_headers/full_example.db
+
+suites:
+  - name: Full Example - Order Processing
+    enabled: true
+    critical: true
+    config: flow_tests/full_example_no_headers/config.yaml
+    date_format: '%Y-%m-%d'
+    tags:
+      - example
+      - no-headers
+      - auto-increment
+
+reporting:
+  output_dir: reports

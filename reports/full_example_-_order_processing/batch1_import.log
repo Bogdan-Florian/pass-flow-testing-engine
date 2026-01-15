@@ -1,0 +1,16 @@
+[BATCH1] Starting order import...
+[BATCH1] Parameter 1: --mode
+[BATCH1] Parameter 2: import
+[BATCH1] Simulating order import from CSV...
+timeout: invalid time interval ‘/t’
+Try 'timeout --help' for more information.
+[BATCH1] Order import completed successfully.
+=== Batch Execution Log ===
+Script: flow_tests\full_example_no_headers\batches\batch1.bat
+Start Time: 2026-01-15T20:23:55.074741
+==================================================
+
+
+==================================================
+End Time: 2026-01-15T20:23:55.097777
+Exit Code: 0

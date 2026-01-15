@@ -3,17 +3,20 @@ version: 1
 database:
   connection_url: sqlite:///flow_tests/remote_insert_mock/remote_insert_mock.db
 
+# IMPORTANT: Replace these placeholder values with your actual credentials.
+# Consider using environment variables or a separate credentials file
+# that is not committed to version control.
 sftp:
-  host: 157.180.46.211
+  host: your-sftp-host
   port: 22
-  username: root
-  password: ArbqsLJEmwFvkNb9dFcM1
+  username: your-username
+  password: your-password  # Or use private_key: /path/to/key
 
 ssh:
-  host: 157.180.46.211
+  host: your-ssh-host
   port: 22
-  username: root
-  password: ArbqsLJEmwFvkNb9dFcM1
+  username: your-username
+  password: your-password  # Or use private_key: /path/to/key
   os: Linux
   shell: /bin/bash
 

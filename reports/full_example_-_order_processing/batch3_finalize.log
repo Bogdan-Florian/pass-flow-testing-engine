@@ -1,0 +1,17 @@
+[BATCH3] Starting order finalization...
+[BATCH3] Parameter 1: --notify
+[BATCH3] Parameter 2: email
+[BATCH3] Updating order status...
+timeout: invalid time interval ‘/t’
+Try 'timeout --help' for more information.
+[BATCH3] Sending notification...
+[BATCH3] Order finalized successfully.
+=== Batch Execution Log ===
+Script: flow_tests\full_example_no_headers\batches\batch3.bat
+Start Time: 2026-01-15T20:23:55.115752
+==================================================
+
+
+==================================================
+End Time: 2026-01-15T20:23:55.146366
+Exit Code: 0

@@ -1,0 +1,101 @@
+# Full Example Configuration - No Headers CSV
+# Demonstrates: 3 batches with parameters, column by index, primary key auto-increment
+
+file:
+  path: test.csv
+  delimiter: '|'
+  encoding: utf-8
+  has_header: false  # CSV has no header row - use column indices
+
+# Primary key configuration
+# Column 5 contains order_id (e.g., ORD-000001)
+primary_key:
+  column_index: 5     # 0-based index (order_id is the 6th column)
+  auto_increment: true
+
+# Batch execution - 3 batches, each with 2 parameters
+batches:
+  # Batch 1: Validate and import order
+  - name: Import Order
+    script: flow_tests/full_example_no_headers/batches/batch1
+    copy_input_file_to: flow_tests/full_example_no_headers/system/input
+    log_file: batch1_import.log
+    args:
+      - "--mode=import"
+      - "--validate=true"
+
+  # Batch 2: Process payment
+  - name: Process Payment
+    script: flow_tests/full_example_no_headers/batches/batch2
+    copy_input_file_to: flow_tests/full_example_no_headers/system/input
+    log_file: batch2_payment.log
+    args:
+      - "--payment-gateway=mock"
+      - "--timeout=30"
+
+  # Batch 3: Update status and notify
+  - name: Finalize Order
+    script: flow_tests/full_example_no_headers/batches/batch3
+    copy_input_file_to: flow_tests/full_example_no_headers/system/input
+    log_file: batch3_finalize.log
+    args:
+      - "--notify=email"
+      - "--status=COMPLETED"
+
+# Variable mappings using column indices (0-based)
+# CSV columns: 0=customer_name, 1=product_code, 2=quantity, 3=unit_price,
+#              4=total_amount, 5=order_id, 6=order_date, 7=status
+variables:
+  customer_name: ${row.0}
+  product_code: ${row.1}
+  quantity: ${row.2}:int
+  unit_price: ${row.3}:decimal
+  total_amount: ${row.4}:decimal
+  order_id: ${row.5}
+  order_date: ${row.6}:date
+  status: ${row.7}
+
+# SQL validations to verify batch processing results
+validations:
+  # Validation 1: Check order was imported
+  - name: order_imported
+    sql: |
+      SELECT order_id, customer_name, product_code, quantity, unit_price, total_amount
+      FROM orders
+      WHERE order_id = :order_id
+    expect:
+      row_count: 1
+      columns:
+        customer_name: ${customer_name}
+        product_code: ${product_code}
+        quantity: ${quantity}
+        total_amount: ${total_amount}
+
+  # Validation 2: Check payment was processed
+  - name: payment_processed
+    sql: |
+      SELECT order_id, payment_status, amount_charged
+      FROM payments
+      WHERE order_id = :order_id
+    expect:
+      row_count: 1
+      columns:
+        payment_status: "SUCCESS"
+        amount_charged: ${total_amount}
+
+  # Validation 3: Check final order status
+  - name: order_finalized
+    sql: |
+      SELECT order_id, status, notification_sent
+      FROM orders
+      WHERE order_id = :order_id
+    expect:
+      row_count: 1
+      columns:
+        status: "COMPLETED"
+        notification_sent: 1
+
+execution:
+  validation_copy_path: validation_copy/test.csv
+  stop_on_first_error: false
+  timeout_seconds: 60
